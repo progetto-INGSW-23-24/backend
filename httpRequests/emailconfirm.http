@@ -1,0 +1,7 @@
+POST http://localhost:3000/auth/emailConfirmCode
+Content-Type: application/json
+
+{
+  "email": "s.ingenito02@gmail.com",
+  "code": "477631"
+}

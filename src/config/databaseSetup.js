@@ -1,4 +1,5 @@
 import connection from "./connection.js";
+import * as Models from '../models/index.js'; 
 
 const syncDatabase = async () => {
     try {

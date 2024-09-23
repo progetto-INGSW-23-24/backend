@@ -1,0 +1,6 @@
+GET http://localhost:3000/auth/emailResendCode
+Content-Type: application/json
+
+{
+    "email": "s.ingenito02@gmail.com"
+}
