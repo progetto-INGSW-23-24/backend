@@ -32,6 +32,10 @@ const UserModel = {
             defaultValue: "", 
             allowNull: false 
         },
+        fcm: {
+            type: DataTypes.TEXT, 
+            allowNull: false 
+        }, 
         socialLink: {
             type: DataTypes.ARRAY(DataTypes.STRING), 
             defaultValue: [],

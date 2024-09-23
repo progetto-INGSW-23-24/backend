@@ -1,0 +1,11 @@
+PUT http://localhost:3000/users
+Content-Type: application/json
+
+{
+  "firstname": "Mario",
+  "lastName": "Rossi",
+  "bio": "Software Developer",
+  "webSiteLink": "https://mariosito.com",
+  "profileImagePath": "/uploads/profile_image.jpg",
+  "socialLink": ["https://twitter.com/mario", "https://github.com/mariorossi"]
+}

@@ -2,7 +2,8 @@ import { DataTypes } from "sequelize";
 
 const EnglishAuctionModel = {
     id: {
-        type: DataTypes.STRING, 
+        type: DataTypes.UUID, 
+        defaultValue: DataTypes.UUIDV4, 
         primaryKey: true 
     }, 
     description: {

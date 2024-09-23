@@ -1,0 +1,4 @@
+GET http://localhost:3000/auctions?limit=10&page=1
+// GET /auctions?limit=10&page=1&categories=2,3
+// GET /auctions?limit=5&page=2
+Content-Type: application/json

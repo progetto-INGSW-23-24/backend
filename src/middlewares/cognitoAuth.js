@@ -14,7 +14,7 @@ const cognitoAuth = (req, res, next) => {
         return res.status(401).json({message: 'Token not Valid'}); 
     }
 
-    const cognitoSub = decodedToken.sub; 
+    const cognitoSub = decodedToken.sub;
     console.log(`ID univoco dell\'utente: ${cognitoSub}`);
 
     req.user = {
