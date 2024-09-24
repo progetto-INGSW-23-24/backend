@@ -123,11 +123,9 @@ class AuthController {
         try {
             // Esegui la registrazione dell'utente
             const signup = await cognito.signUp(params).promise(); 
-
-            console.log("cognitoUserId", signup.UserSub, typeof(signup.UserSub));
             
             const newUser = await User.create({
-                    userId: signup.UserSub, 
+                    id: signup.UserSub, 
                     firstname: given_name,
                     lastName: family_name,
                     email: email,
@@ -137,7 +135,7 @@ class AuthController {
                     socialLink: []
                 })
             
-            res.status(200).json({message: `Registrazione Inviata, conferma Indirizzo Email:${result}`, user: newUser}); 
+            res.status(200).json({message: `Registrazione Inviata`, user: newUser}); 
     
         } catch (error) {
             // Gestione degli errori specifici di Cognito
