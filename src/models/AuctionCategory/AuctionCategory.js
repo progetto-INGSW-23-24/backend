@@ -2,14 +2,21 @@ import { DataTypes } from "sequelize";
 
 const AuctionCategoryModel = {
   categoryId: {
-    type: DataTypes.INTEGER, 
+    type: DataTypes.SMALLINT,
     references: {
-      model: 'categories',
-      key: 'id'
-    }
+      model: 'Categories',
+      key: 'categoryId'
+    },
+    allowNull: false 
   },
-  auctionId: DataTypes.STRING,
-  auctionType: DataTypes.STRING 
+  auctionId: {
+    type: DataTypes.UUID, 
+    allowNull: false 
+  },
+  auctionType: {
+    type: DataTypes.ENUM('English', 'Descendant', 'Silent'),
+    allowNull: false 
+  },
 }
 
 export default AuctionCategoryModel; 

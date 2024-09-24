@@ -7,23 +7,6 @@ import { COGNITO_CLIENT_ID, COGNITO_USER_POOL_ID, COGNITO_REGION, DOMAIN, DB_POR
 
 class AuthController {
 
-    static async confirmEmail(req, res, next) {
-        const { email, code } = req.body; 
-
-        const params = {
-            ClientId: COGNITO_CLIENT_ID, 
-            Username: email, 
-            ConfirmationCode: code 
-        }; 
-
-        try {
-            const result = await cognito.confirmSignUp(params).promise();
-            res.status(200).json({message: "Utente confermato con successo", result}) 
-        } catch(error) {
-            return next(new HttpError("Errore nella conferma dell'utente, riprovare", 400)); 
-        }
-    }
-
     static async resendEmailConfirmCode(req, res, next) {
         const email = req.body; 
 
@@ -42,39 +25,69 @@ class AuthController {
     }
 
     static async signin(req, res, next) {
-        const { email, password } = req.body; console.log(email, password);
-
+        const { email, password } = req.body;
+    
         const params = {
             AuthFlow: 'USER_PASSWORD_AUTH',
-            ClientId: COGNITO_CLIENT_ID, 
+            ClientId: COGNITO_CLIENT_ID, // Assicurati di avere COGNITO_CLIENT_ID nel tuo .env
             AuthParameters: {
                 USERNAME: email,
-                PASSWORD: password 
+                PASSWORD: password
             }
-        }
-
+        };
+    
         try {
-            // login con cognito
-            const result = await cognito.initiateAuth(params).promise();
-
-            // Se il login ha successo, restituisci i token
-            return {
-                message: 'Login effettuato con successo!',
-                accessToken: result.AuthenticationResult.AccessToken,
-                idToken: result.AuthenticationResult.IdToken,
-                refreshToken: result.AuthenticationResult.RefreshToken
+            // 1. Autenticazione dell'utente con Cognito
+            const authResult = await cognito.initiateAuth(params).promise();
+    
+            // 2. Verifica dello stato dell'email (se confermata)
+            const userParams = {
+                UserPoolId: COGNITO_USER_POOL_ID, // Assicurati che COGNITO_USER_POOL_ID sia nel tuo .env
+                Username: email
             };
-        } catch(error) {
-            console.log("Signin", error);
+            const cognitoUser = await cognito.adminGetUser(userParams).promise();
+    
+            // 3. Troviamo l'attributo email_verified
+            const emailVerifiedAttribute = cognitoUser.UserAttributes.find(
+                attr => attr.Name === 'email_verified'
+            );
+    
+            const isEmailVerified = emailVerifiedAttribute && emailVerifiedAttribute.Value === 'true';
+    
+            // 4. Controlliamo se l'email è confermata
+            if (!isEmailVerified) {
+                return next(new HttpError('Email non confermata. Verifica la tua casella di posta.', 400));
+            }
+    
+            // 5. Se l'email è confermata, restituire i token di autenticazione
+            const { IdToken, AccessToken, RefreshToken } = authResult.AuthenticationResult;
+    
+            const user = await User.findOne({where: {email: email}}); 
+
+            // Restituiamo i token JWT
+            res.status(200).json({
+                message: 'Login effettuato con successo',
+                user: user,
+                tokens: {
+                    IdToken,
+                    AccessToken,
+                    RefreshToken
+                }
+            });
+    
+        } catch (error) {
+            // 6. Gestione degli errori
+            console.log("Signin Error:", error);
+            
             if (error.code === 'NotAuthorizedException') {
                 return next(new HttpError('Credenziali non valide. Verifica email e password.', 401)); // Errore 401 - Non autorizzato
             } else if (error.code === 'UserNotFoundException') {
                 return next(new HttpError('Utente non trovato. Verifica email e password.', 404)); // Errore 404 - Utente non trovato
             } else if (error.code === 'UserNotConfirmedException') {
-                return next(new HttpError('Email non confermata', 400)); 
+                return next(new HttpError('Email non confermata. Completa la verifica della tua email.', 400)); // Errore 400 - Email non confermata
             }
-
-            return next(new HttpError('Errore durante il login, riprova', 500)); 
+    
+            return next(new HttpError('Errore durante il login, riprova', 500)); // Errore generico 500
         }
     }
 
@@ -110,9 +123,21 @@ class AuthController {
         try {
             // Esegui la registrazione dell'utente
             const signup = await cognito.signUp(params).promise(); 
-            console.log(signup);
+
+            console.log("cognitoUserId", signup.UserSub, typeof(signup.UserSub));
             
-            res.status(200).json({message: "Registrazione Inviata, conferma Indirizzo Email", result}); 
+            const newUser = await User.create({
+                    userId: signup.UserSub, 
+                    firstname: given_name,
+                    lastName: family_name,
+                    email: email,
+                    bio: "", 
+                    webSiteLink: "",
+                    profileImagePath: "",
+                    socialLink: []
+                })
+            
+            res.status(200).json({message: `Registrazione Inviata, conferma Indirizzo Email:${result}`, user: newUser}); 
     
         } catch (error) {
             // Gestione degli errori specifici di Cognito

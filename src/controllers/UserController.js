@@ -21,6 +21,7 @@ class UserController {
                 bio: req.body.bio,
                 webSiteLink: req.body.webSiteLink,
                 profileImagePath: req.body.profileImagePath,
+                fcm: req.body.fcm, 
                 socialLink: req.body.socialLink
             };
 

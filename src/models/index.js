@@ -21,7 +21,6 @@ const DescendingAuctionOffer = connection.define('DescendingAuctionOffer', Desce
 const Category = connection.define('Category', CategoryModel, {timestamps: false});
 const AuctionCategory = connection.define('AuctionCategory', AuctionCategoryModel, {timestamps: false}); 
 
-
 // Definizione Associazioni 
 User.createdSilentAuctions = User.hasMany(SilentAuction, {foreignKey: {allowNull: false, name: 'sellerId'}, onDelete: 'CASCADE'});
 User.createdDescendingAuctions = User.hasMany(DescendingAuction, {foreignKey: {allowNull: false, name: 'sellerId'}, onDelete: 'CASCADE'}); 
@@ -37,35 +36,37 @@ SilentAuction.offers = SilentAuction.hasMany(SilentAuctionOffer, {foreignKey: {a
 DescendingAuction.offers = DescendingAuction.hasMany(DescendingAuctionOffer, {foreignKey: {allowNull: false, name: 'offerId'}, onDelete: 'CASCADE'}); 
 EnglishAuction.offers = EnglishAuction.hasMany(EnglishAuctionOffer, {foreignKey: {allowNull: false}, onDelete: 'CASCADE'}); 
 
-SilentAuctionOffer.usersOffers = SilentAuctionOffer.hasMany(User, {foreignKey: {allowNull: false, name: 'userId'}, onDelete: 'CASCADE'}); 
-DescendingAuctionOffer.usersOffers = DescendingAuctionOffer.hasMany(User, {foreignKey: {allowNull: false, name: 'userId'}, onDelete: 'CASCADE'}); 
-EnglishAuctionOffer.usersOffers = EnglishAuctionOffer.hasMany(User, {foreignKey: {allowNull: false, name: 'userId'}, onDelete: 'CASCADE'}); 
+User.SilentOffers = User.hasMany(SilentAuctionOffer, {foreignKey: {allowNull: false, name: 'userId'}, onDelete: 'CASCADE'}); 
+User.DescendingOffers = User.hasMany(DescendingAuctionOffer, {foreignKey: {allowNull: false, name: 'userId'}, onDelete: 'CASCADE'}); 
+User.usersOffers = User.hasMany(EnglishAuctionOffer, {foreignKey: {allowNull: false, name: 'userId'}, onDelete: 'CASCADE'}); 
 
 
 // Associazioni Aste - Categorie con associazioni polimorfica
 // English Auction associazione polimorfica
 EnglishAuction.belongsToMany(Category, {
-    through: {
-      model: AuctionCategory,
-      unique: false,
-      scope: {
-        auctionType: 'english_auction'
-      }
-    },
-    foreignKey: 'auctionId',
-    constraints: false
-  });
-  Category.belongsToMany(EnglishAuction, {
-    through: {
-      model: AuctionCategory,
-      unique: false,
-      scope: {
-        auctionType: 'english_auction'
-      }
-    },
-    foreignKey: 'categoryId',
-    constraints: false
-  });
+  through: {
+    model: AuctionCategory,
+    unique: false,
+    scope: {
+      auctionType: 'English' // Associazione polimorfica basata sul tipo di asta
+    }
+  },
+  foreignKey: 'auctionId',
+  constraints: false
+});
+
+Category.belongsToMany(EnglishAuction, {
+  through: {
+    model: AuctionCategory,
+    unique: false,
+    scope: {
+      auctionType: 'English' // Filtra per tipo d'asta
+    }
+  },
+  foreignKey: 'categoryId',
+  constraints: false
+});
+
   
   // Reverse Auction associazione polimorfica
   DescendingAuction.belongsToMany(Category, {
@@ -73,23 +74,25 @@ EnglishAuction.belongsToMany(Category, {
       model: AuctionCategory,
       unique: false,
       scope: {
-        auctionType: 'descending_auction'
+        auctionType: 'Descendant' // Associazione basata sul tipo "Discendente"
       }
     },
     foreignKey: 'auctionId',
     constraints: false
   });
+  
   Category.belongsToMany(DescendingAuction, {
     through: {
       model: AuctionCategory,
       unique: false,
       scope: {
-        auctionType: 'descending_auction'
+        auctionType: 'Descendant'
       }
     },
     foreignKey: 'categoryId',
     constraints: false
   });
+  
   
   // Silent Auction associazione polimorfica
   SilentAuction.belongsToMany(Category, {
@@ -97,24 +100,25 @@ EnglishAuction.belongsToMany(Category, {
       model: AuctionCategory,
       unique: false,
       scope: {
-        auctionType: 'silent_auction'
+        auctionType: 'Silent' // Associazione polimorfica basata sul tipo silenzioso
       }
     },
     foreignKey: 'auctionId',
     constraints: false
   });
+  
   Category.belongsToMany(SilentAuction, {
     through: {
       model: AuctionCategory,
       unique: false,
       scope: {
-        auctionType: 'silent_auction'
+        auctionType: 'Silent'
       }
     },
     foreignKey: 'categoryId',
     constraints: false
   });
-
+  
 
 // Definizione Triggers 
 
@@ -225,13 +229,6 @@ EnglishAuctionOffer.afterUpsert(async (result, options) => {
       console.log(`Timer dell'asta (ID: ${auction.id}) resettato a ${newEndTime}`);
   }
 });
-
-
-
-
-
-
-
   
 
 export { 

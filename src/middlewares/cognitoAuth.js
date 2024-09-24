@@ -18,7 +18,7 @@ const cognitoAuth = (req, res, next) => {
     console.log(`ID univoco dell\'utente: ${cognitoSub}`);
 
     req.user = {
-        sub: cognitoSub,
+        userId: cognitoSub,
         email: decodedToken.email
     }
 

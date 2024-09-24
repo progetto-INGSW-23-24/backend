@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 
 const UserModel = {
         id: {
-            type: DataTypes.STRING, 
+            type: DataTypes.UUID, 
             primaryKey: true  
         }, 
         firstname: {
@@ -34,7 +34,7 @@ const UserModel = {
         },
         fcm: {
             type: DataTypes.TEXT, 
-            allowNull: false 
+            allowNull: true 
         }, 
         socialLink: {
             type: DataTypes.ARRAY(DataTypes.STRING), 
