@@ -7,7 +7,6 @@ import connection from './config/connection.js';
 import { authRouter, userRouter, auctionRouter } from './routes/index.js';
 import errorHandler from './middlewares/errorHandler.js';
 import {
-    SERVER_PORT,
     DB_PORT,
     DB_USER,
     DB_PSW,
