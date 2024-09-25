@@ -63,5 +63,5 @@ app.get('/', (req, res) => {
 
 
 app.listen(SERVER_PORT, () => {
-    console.log(`Server running at localhost:${SERVER_PORT}`);
+    console.log(`Server running at ${SERVER_HOST}:${SERVER_PORT}`);
 })
