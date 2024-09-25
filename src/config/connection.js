@@ -14,7 +14,7 @@ const connection = new Sequelize({
         ssl: {
             require: true,
             rejectUnauthorized: true,
-            ca: fs.readFileSync('src/config/dieti_deals_24_backend_key.pem').toString()
+            ca: fs.readFileSync('src/config/eu-central-1-bundle.pem').toString()
         }
     }
 })
