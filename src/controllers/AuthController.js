@@ -3,7 +3,7 @@ import HttpError from '../config/HttpError.js';
 import cognito from '../config/cognito.js'; 
 import https from 'https'; 
 import queryString from 'query-string';
-import { COGNITO_CLIENT_ID, COGNITO_USER_POOL_ID, COGNITO_REGION, DOMAIN, DB_PORT } from '../config/environment.js';
+import { COGNITO_CLIENT_ID, COGNITO_USER_POOL_ID, COGNITO_REGION, SERVER_HOST, DB_PORT } from '../config/environment.js';
 
 class AuthController {
 
@@ -160,7 +160,7 @@ class AuthController {
             const queryParams = queryString.stringify({
                 response_type: 'code',
                 client_id: COGNITO_CLIENT_ID,
-                redirect_uri: `${DOMAIN}:${DB_PORT}/googleSignup`,
+                redirect_uri: `${SERVER_HOST}:${DB_PORT}/googleSignup`,
                 scope: 'openid profile email',
                 identity_provider: 'Google',
             });
@@ -176,7 +176,7 @@ class AuthController {
                 grant_type: 'authorization_code',
                 client_id: COGNITO_CLIENT_ID,
                 code: code,
-                redirect_uri: `${DOMAIN}:${DB_PORT}/googleSignup`,
+                redirect_uri: `${SERVER_HOST}:${DB_PORT}/googleSignup`,
             });
     
             const options = {
