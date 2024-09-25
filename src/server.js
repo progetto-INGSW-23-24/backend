@@ -19,10 +19,6 @@ import {
     COGNITO_REGION
 } from './config/environment.js';
 
-import dotenv from 'dotenv';
-
-dotenv.config();
-
 const SERVER_PORT = 3000;
 
 const app = express();

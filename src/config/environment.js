@@ -1,3 +1,7 @@
+import dotenv from 'dotenv';
+
+dotenv.config({ path: "../../.env" })
+
 const SERVER_PORT = process.env.SERVER_PORT;
 const DB_PORT = process.env.DB_PORT;
 const DB_USER = process.env.DB_USER;
