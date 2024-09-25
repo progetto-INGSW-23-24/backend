@@ -87,7 +87,7 @@ class AuthController {
                 return next(new HttpError('Email non confermata. Completa la verifica della tua email.', 400)); // Errore 400 - Email non confermata
             }
     
-            return next(new HttpError('Errore durante il login, riprova', 500)); // Errore generico 500
+            return next(new HttpError(error, 500)); // Errore generico 500
         }
     }
 
