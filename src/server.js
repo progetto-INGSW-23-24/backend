@@ -45,6 +45,7 @@ app.get('/', (req, res) => {
     // res.send("Dieti Deals Backend"); 
     res.json(
         {
+            "process.env.DB_HOST": process.env.DB_HOST ?? "niente",
             "SERVER_PORT": SERVER_PORT,
             "DB_PORT": DB_PORT ?? "niente",
             "DB_USER": DB_USER ?? "niente",
