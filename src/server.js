@@ -6,18 +6,7 @@ import bodyParser from 'body-parser';
 import connection from './config/connection.js';
 import { authRouter, userRouter, auctionRouter } from './routes/index.js';
 import errorHandler from './middlewares/errorHandler.js';
-import {
-    DB_PORT,
-    DB_USER,
-    DB_PSW,
-    DB_SCHEMA,
-    DB_HOST,
-    DB_NAME,
-    SERVER_HOST,
-    COGNITO_CLIENT_ID,
-    COGNITO_USER_POOL_ID,
-    COGNITO_REGION
-} from './config/environment.js';
+import { SERVER_HOST } from './config/environment.js';
 
 const SERVER_PORT = 3000;
 
@@ -42,23 +31,7 @@ app.use('/auth', authRouter);
 app.use(errorHandler);
 
 app.get('/', (req, res) => {
-    // res.send("Dieti Deals Backend"); 
-    res.json(
-        {
-            "process.env.DB_HOST": process.env.DB_HOST ?? "niente",
-            "SERVER_PORT": SERVER_PORT,
-            "DB_PORT": DB_PORT ?? "niente",
-            "DB_USER": DB_USER ?? "niente",
-            "DB_PSW": DB_PSW ?? "niente",
-            "DB_SCHEMA": DB_SCHEMA ?? "niente",
-            "DB_HOST": DB_HOST ?? "niente",
-            "DB_NAME": DB_NAME ?? "niente",
-            "SERVER_HOST": SERVER_HOST ?? "niente",
-            "COGNITO_CLIENT_ID": COGNITO_CLIENT_ID ?? "niente",
-            "COGNITO_USER_POOL_ID": COGNITO_USER_POOL_ID ?? "niente",
-            "COGNITO_REGION": COGNITO_REGION ?? "niente"
-        }
-    );
+    res.send("Dieti Deals Backend");
 })
 
 

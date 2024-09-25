@@ -15,8 +15,6 @@ const COGNITO_CLIENT_ID = process.env.COGNITO_CLIENT_ID;
 const COGNITO_USER_POOL_ID = process.env.COGNITO_USER_POOL_ID;
 const COGNITO_REGION = process.env.COGNITO_REGION;
 
-console.log(process.env.DB_HOST);
-
 export {
     SERVER_PORT,
     DB_PORT,
