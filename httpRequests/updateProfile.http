@@ -2,7 +2,7 @@ PUT http://localhost:3000/users
 Content-Type: application/json
 
 {
-  "firstname": "Mario",
+  "firstName": "Mario",
   "lastName": "Rossi",
   "bio": "Software Developer",
   "webSiteLink": "https://mariosito.com",

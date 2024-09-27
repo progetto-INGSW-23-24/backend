@@ -16,7 +16,7 @@ class UserController {
 
             // Campi che l'utente può modificare
             const updateData = {
-                firstname: req.body.firstname,
+                firstName: req.body.firstName,
                 lastName: req.body.lastName,
                 bio: req.body.bio,
                 webSiteLink: req.body.webSiteLink,

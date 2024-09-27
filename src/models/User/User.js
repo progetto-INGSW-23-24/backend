@@ -5,7 +5,7 @@ const UserModel = {
             type: DataTypes.UUID, 
             primaryKey: true  
         }, 
-        firstname: {
+        firstName: {
             type: DataTypes.TEXT,
             allowNull: false 
         }, 

@@ -126,7 +126,7 @@ class AuthController {
             
             const newUser = await User.create({
                     id: signup.UserSub, 
-                    firstname: given_name,
+                    firstName: given_name,
                     lastName: family_name,
                     email: email,
                     bio: "", 
