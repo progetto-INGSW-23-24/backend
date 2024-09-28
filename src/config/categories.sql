@@ -1,0 +1,17 @@
+INSERT INTO public."Categories" (name) VALUES
+    ('Arredamento'),
+    ('Elettronica'),
+    ('Abbigliamento'),
+    ('Sport'),
+    ('Collezionismo'),
+    ('Antiquariato'),
+    ('Giocattoli'),
+    ('Auto'),
+    ('Moto'),
+    ('Bellezza e Cura Personale'),
+    ('Cucina'),
+    ('Musica'),
+    ('Fai da Te'),
+    ('Prodotti per Animali'),
+    ('Fitness'),
+    ('Tecnologia');
