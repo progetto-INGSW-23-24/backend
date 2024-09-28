@@ -241,7 +241,7 @@ class AuthController {
             res.json({
                 accessToken: response.AuthenticationResult.AccessToken,
                 idToken: response.AuthenticationResult.IdToken,
-                expiresIn: response.AuthenticationResult.ExpiresIn,
+                refreshToken: response.AuthenticationResult.RefreshToken,
             });
         } catch (error) {
             return next(new HttpError('Failed to refresh token', 500));
