@@ -7,9 +7,6 @@ class UserController {
             // Id dell'utente autenticato ottenuto dal middleware
             const userId = req.user.userId;
 
-            // Trova l'utente nel database
-            const user = await User.findByPk(userId);
-            
             if (!user) {
                 return res.status(404).json({ message: "Utente non trovato." });
             }
@@ -21,17 +18,17 @@ class UserController {
                 bio: req.body.bio,
                 webSiteLink: req.body.webSiteLink,
                 profileImagePath: req.body.profileImagePath,
-                fcm: req.body.fcm, 
+                fcm: req.body.fcm,
                 socialLink: req.body.socialLink
             };
 
+
             // Aggiorna solo i campi presenti nel body della richiesta
-            await user.update(updateData, { fields: Object.keys(updateData) });
+           await User.update(updateData, { where: { id: userId }, fields: Object.keys(updateData) });
 
             // Risposta di successo
             return res.status(200).json({
                 message: "Profilo aggiornato con successo.",
-                user
             });
         } catch (error) {
             console.error("Errore nell'aggiornamento del profilo:", error);
