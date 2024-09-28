@@ -7,10 +7,6 @@ class UserController {
             // Id dell'utente autenticato ottenuto dal middleware
             const userId = req.user.userId;
 
-            if (!user) {
-                return res.status(404).json({ message: "Utente non trovato." });
-            }
-
             // Campi che l'utente può modificare
             const updateData = {
                 firstName: req.body.firstName,
