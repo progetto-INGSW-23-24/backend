@@ -5,6 +5,6 @@ import CategoryController from "../controllers/CategoryController.js";
 const categoryRouter = express.Router();
 
 // modifica profilo utente 
-categoryRouter.get('', cognitoAuth, CategoryController.modifyProfile);
+categoryRouter.get('', cognitoAuth, CategoryController.getCategories);
 
 export default categoryRouter; 
