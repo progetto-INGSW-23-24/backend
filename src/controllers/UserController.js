@@ -4,8 +4,8 @@ class UserController {
 
     static async modifyProfile(req, res, next) {
         try {
-            // Id dell'utente autenticato (puoi ottenerlo dal token o da req.user.id)
-            const userId = req.user.id;
+            // Id dell'utente autenticato ottenuto dal middleware
+            const userId = req.user.userId;
 
             // Trova l'utente nel database
             const user = await User.findByPk(userId);

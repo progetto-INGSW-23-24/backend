@@ -48,7 +48,9 @@ const cognitoAuth = async (req, res, next) => {
             }
 
             // Se il token è valido, puoi inserire i dati dell'utente nella request
-            req.user = decoded;
+            req.user = {
+                userId: decodedToken.sub,
+            };
             next();
         });
     } catch (error) {
