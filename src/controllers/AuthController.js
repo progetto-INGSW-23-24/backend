@@ -230,7 +230,7 @@ class AuthController {
 
         const params = {
             AuthFlow: 'REFRESH_TOKEN_AUTH',
-            ClientId: CLIENT_ID,
+            ClientId: COGNITO_CLIENT_ID,
             AuthParameters: {
                 'REFRESH_TOKEN': refreshToken,
             },
