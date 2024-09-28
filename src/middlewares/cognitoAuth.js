@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { COGNITO_REGION, COGNITO_USER_POOL_ID } from '../config/environment';
+import { COGNITO_REGION, COGNITO_USER_POOL_ID } from '../config/environment.js';
 
 let pems = {}; // Oggetto per memorizzare le chiavi
 
