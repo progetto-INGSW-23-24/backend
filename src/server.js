@@ -7,6 +7,7 @@ import connection from './config/connection.js';
 import { authRouter, userRouter, auctionRouter } from './routes/index.js';
 import errorHandler from './middlewares/errorHandler.js';
 import { SERVER_HOST } from './config/environment.js';
+import categoryRouter from './routes/CategoryRouter.js';
 
 const SERVER_PORT = 3000;
 
@@ -27,6 +28,7 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use('/users', userRouter);
 app.use('/auctions', auctionRouter);
 app.use('/auth', authRouter);
+app.use('/category', categoryRouter);
 
 app.use(errorHandler);
 
