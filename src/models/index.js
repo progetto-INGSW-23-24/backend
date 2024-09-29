@@ -152,7 +152,7 @@ EnglishAuctionOffer.afterUpsert(async (result, options) => {
 export {
   User,
   Category,
-  AuctionCategory,
+  AuctionCategoryModel,
   SilentAuction,
   DescendingAuction,
   EnglishAuction,
