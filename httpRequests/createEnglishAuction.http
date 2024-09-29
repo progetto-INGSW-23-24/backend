@@ -5,7 +5,7 @@ Content-Type: multipart/form-data
     "description": "Asta per un'opera d'arte",
     "image": <file>,             // Il file dell'immagine da caricare
     "startingPrice": 100.00,    // Prezzo iniziale dell'asta
-    "increaseThresold": 10.00,   // Soglia di incremento
+    "increaseThreshold": 10.00,   // Soglia di incremento
     "timer": 6000,                  // Timer in secondi
     "auctionType": "english",
     "categoryIds": "[id1, id2]"

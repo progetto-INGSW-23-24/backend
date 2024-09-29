@@ -1,149 +1,157 @@
 import { EnglishAuction, DescendingAuction, SilentAuction, SilentAuctionOffer, DescendingAuctionOffer, EnglishAuctionOffer, User, Category } from "../models/index.js";
-import HttpError from '../config/HttpError.js'; 
+import HttpError from '../config/HttpError.js';
 
 class AuctionController {
-    
+
     static async getAuctions(req, res, next) {
-            try {
-                // Parametri di query: limit, page, categories
-                const limit = parseInt(req.query.limit) || 10; // Default: 10 elementi
-                const page = parseInt(req.query.page) || 1; // Default: prima pagina
-                const offset = (page - 1) * limit; // Calcola l'offset per la paginazione
-                const categoryIds = req.query.categories ? req.query.categories.split(',').map(Number) : null;
-    
-                // Condizioni di ricerca (filtraggio per categoria opzionale)
-                const whereCondition = {};
-                
-                // Filtra per categorie se specificato
-                let includeCategoryCondition = [];
-    
-                if (categoryIds && categoryIds.length > 0) {
-                    includeCategoryCondition.push({
-                        model: Category,
-                        where: {
-                            id: { [Op.in]: categoryIds }
-                        },
-                        required: true // Fa sì che vengano ritornate solo le aste che appartengono a queste categorie
-                    });
-                }
-    
-                // Include le offerte e il venditore per ciascun tipo di asta
-                const includeOffersAndUserCondition = {
-                    silent: [
-                        { model: SilentAuctionOffer, as: 'offers' },
-                        { model: User, as: 'seller', attributes: ['id', 'name', 'email'] } // Include il creatore dell'asta
-                    ],
-                    english: [
-                        { model: EnglishAuctionOffer, as: 'offers' },
-                        { model: User, as: 'seller', attributes: ['id', 'name', 'email'] }
-                    ],
-                    descending: [
-                        { model: DescendingAuctionOffer, as: 'offers' },
-                        { model: User, as: 'seller', attributes: ['id', 'name', 'email'] }
-                    ]
-                };
-    
-                // Trova tutte le aste (silent, descending, english) con paginazione, categorie, offerte e creatore
-                const silentAuctions = await SilentAuction.findAndCountAll({
-                    where: whereCondition,
-                    limit,
-                    offset,
-                    include: [...includeCategoryCondition, ...includeOffersAndUserCondition.silent],
-                    order: [['createdAt', 'DESC']]
+        try {
+            // Parametri di query: limit, page, categories
+            const limit = parseInt(req.query.limit) || 10; // Default: 10 elementi
+            const page = parseInt(req.query.page) || 1; // Default: prima pagina
+            const offset = (page - 1) * limit; // Calcola l'offset per la paginazione
+            const categoryIds = req.query.categories ? req.query.categories.split(',').map(Number) : null;
+
+            // Condizioni di ricerca (filtraggio per categoria opzionale)
+            const whereCondition = {};
+
+            // Filtra per categorie se specificato
+            let includeCategoryCondition = [];
+
+            if (categoryIds && categoryIds.length > 0) {
+                includeCategoryCondition.push({
+                    model: Category,
+                    where: {
+                        id: { [Op.in]: categoryIds }
+                    },
+                    required: true // Fa sì che vengano ritornate solo le aste che appartengono a queste categorie
                 });
-    
-                const englishAuctions = await EnglishAuction.findAndCountAll({
-                    where: whereCondition,
-                    limit,
-                    offset,
-                    include: [...includeCategoryCondition, ...includeOffersAndUserCondition.english],
-                    order: [['createdAt', 'DESC']]
-                });
-    
-                const descendingAuctions = await DescendingAuction.findAndCountAll({
-                    where: whereCondition,
-                    limit,
-                    offset,
-                    include: [...includeCategoryCondition, ...includeOffersAndUserCondition.descending],
-                    order: [['createdAt', 'DESC']]
-                });
-    
-                // Combinare le aste
-                const allAuctions = [
-                    ...silentAuctions.rows,
-                    ...englishAuctions.rows,
-                    ...descendingAuctions.rows
-                ];
-    
-                // Ordina tutte le aste per createdAt
-                allAuctions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-    
-                // Contare il numero totale di aste (combinato tra tutti i tipi di asta)
-                const totalAuctions = silentAuctions.count + englishAuctions.count + descendingAuctions.count;
-    
-                // Restituire la risposta con tutte le aste e le informazioni di paginazione
-                res.status(200).json({
-                    auctions: allAuctions,
-                    total: totalAuctions,
-                    page,
-                    totalPages: Math.ceil(totalAuctions / limit)
-                });
-    
-            } catch (error) {
-                console.error('Errore nel recupero delle aste:', error);
-                next(new HttpError(`Errore nel recupero delle aste: ${error.message}`, 500));
             }
+
+            // Include le offerte e il venditore per ciascun tipo di asta
+            const includeOffersAndUserCondition = {
+                silent: [
+                    { model: SilentAuctionOffer, as: 'offers' },
+                    { model: User, as: 'seller', attributes: ['id', 'name', 'email'] } // Include il creatore dell'asta
+                ],
+                english: [
+                    { model: EnglishAuctionOffer, as: 'offers' },
+                    { model: User, as: 'seller', attributes: ['id', 'name', 'email'] }
+                ],
+                descending: [
+                    { model: DescendingAuctionOffer, as: 'offers' },
+                    { model: User, as: 'seller', attributes: ['id', 'name', 'email'] }
+                ]
+            };
+
+            // Trova tutte le aste (silent, descending, english) con paginazione, categorie, offerte e creatore
+            const silentAuctions = await SilentAuction.findAndCountAll({
+                where: whereCondition,
+                limit,
+                offset,
+                include: [...includeCategoryCondition, ...includeOffersAndUserCondition.silent],
+                order: [['createdAt', 'DESC']]
+            });
+
+            const englishAuctions = await EnglishAuction.findAndCountAll({
+                where: whereCondition,
+                limit,
+                offset,
+                include: [...includeCategoryCondition, ...includeOffersAndUserCondition.english],
+                order: [['createdAt', 'DESC']]
+            });
+
+            const descendingAuctions = await DescendingAuction.findAndCountAll({
+                where: whereCondition,
+                limit,
+                offset,
+                include: [...includeCategoryCondition, ...includeOffersAndUserCondition.descending],
+                order: [['createdAt', 'DESC']]
+            });
+
+            // Combinare le aste
+            const allAuctions = [
+                ...silentAuctions.rows,
+                ...englishAuctions.rows,
+                ...descendingAuctions.rows
+            ];
+
+            // Ordina tutte le aste per createdAt
+            allAuctions.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            // Contare il numero totale di aste (combinato tra tutti i tipi di asta)
+            const totalAuctions = silentAuctions.count + englishAuctions.count + descendingAuctions.count;
+
+            // Restituire la risposta con tutte le aste e le informazioni di paginazione
+            res.status(200).json({
+                auctions: allAuctions,
+                total: totalAuctions,
+                page,
+                totalPages: Math.ceil(totalAuctions / limit)
+            });
+
+        } catch (error) {
+            console.error('Errore nel recupero delle aste:', error);
+            next(new HttpError(`Errore nel recupero delle aste: ${error.message}`, 500));
+        }
     }
-    
+
 
     static async getUserAuctions(req, res, next) {
         try {
-            const userId = req.params.userId; 
+            const userId = req.params.userId;
             const auctions = await EnglishAuction.findAll({
                 where: { sellerId: userId },
-                include: [Category], 
-                order: [['createdAt', 'DESC']] 
+                include: [Category],
+                order: [['createdAt', 'DESC']]
             })
 
-            res.status(200).json({auctions}); 
-        } catch(error) {
+            res.status(200).json({ auctions });
+        } catch (error) {
             console.log(`Errore nel recupero delle aste dell'utente:, ${error.message}`);
-            next(new HttpError(`Errore durante il recupero delle aste: ${error.message}`, 500)); 
+            next(new HttpError(`Errore durante il recupero delle aste: ${error.message}`, 500));
         }
     }
 
     static async createAuction(req, res, next) {
         try {
-            const { auctionType, categoryIds, description, expirationDateTime, startingPrice, minimumPrice, increaseThresold, timer, decreaseAmount, decreaseTime } = req.body;  
-            const userId = req.user.sub; 
+            const {
+                auctionType,
+                categories,
+                description,
+                expirationDateTime,
+                startingPrice,
+                minimumPrice,
+                increaseThreshold,
+                timer,
+                decreaseAmount,
+                decreaseTime
+            } = req.body;
 
-            let imagePath = null; 
-            if(req.file) imagePath = req.file.path; 
+            const userId = req.user.userId;
 
-            switch(auctionType) {
+            let imagePath = null;
+            if (req.file) imagePath = req.file.path;
+
+            switch (auctionType) {
                 case 'english':
-
                     const newEnglishAuction = await EnglishAuction.create({
-                        description, 
-                        imagePath,
+                        categories,
+                        description,
                         startingPrice,
-                        increaseThresold,
+                        increaseThreshold,
                         timer,
+                        imagePath,
                         sellerId: userId
                     })
 
-                    if (categoryIds && categoryIds.length > 0) {
-                        await newEnglishAuction.setCategories(categoryIds);
-                    }
+                    res.status(201).json({ message: 'Asta all\'Inglese Creata', auction: newEnglishAuction })
+                    break;
 
-                    res.status(201).json({message: 'Asta all\'Inglese Creata', auction: newEnglishAuction})
-                break; 
-
-                case 'descendant': 
-                    const { description } = req.body; 
+                case 'descendant':
                     const newDescendingAuction = await DescendingAuction.create({
+                        categories,
                         description,
-                        imagePath, 
+                        imagePath,
                         startingPrice,
                         minimumPrice,
                         decreaseAmount,
@@ -151,72 +159,65 @@ class AuctionController {
                         sellerId: userId
                     })
 
-                    if (categoryIds && categoryIds.length > 0) {
-                        await newDescendingAuction.setCategories(categoryIds);
-                    }
+                    res.status(201).json({ message: 'Asta al ribasso Creata', auction: newDescendingAuction })
+                    break;
 
-                    res.status(201).json({message: 'Asta al ribasso Creata', auction: newDescendingAuction})
-                break; 
-
-                case 'silent': 
+                case 'silent':
                     const newSilentAuction = await SilentAuction.create({
+                        categories,
                         description,
                         imagePath,
                         expirationDateTime,
                         sellerId: userId
                     })
 
-                    if (categoryIds && categoryIds.length > 0) {
-                        await newSilentAuction.setCategories(categoryIds);
-                    }
-
-                    res.status(201).json({message: 'Asta Silenziosa Creata', auction: newEnglishAuction})
-                break; 
+                    res.status(201).json({ message: 'Asta Silenziosa Creata', auction: newSilentAuction })
+                    break;
             }
-        } catch(error) {
+        } catch (error) {
             console.log(`Errore nella creazione dell'asta:${error.message}`);
-            next(new HttpError(`Errore nella creazione dell'asta:${error.message}`, 500)); 
+            next(new HttpError(`Errore nella creazione dell'asta:${error.message}`, 500));
         }
     }
 
     static async deleteAuction(req, res, next) {
         try {
-            const auctionId = req.params.id; 
-            const { auctionType } = req.body; 
-            
-            switch(auctionType) {
-                case "english": 
-                    const englishAuction = await EnglishAuction.findOne({where: { id: auctionId }})
-                    englishAuction.destroy(); 
-                    res.send(200).json({message: 'Asta Cancellata', auction: englishAuction}); 
-                break; 
+            const auctionId = req.params.id;
+            const { auctionType } = req.body;
 
-                case "descendant": 
-                    const descendantAuction = await DescendingAuction.findOne({where: { id: auctionId }})
-                    descendantAuction.destroy(); 
-                    res.send(200).json({message: 'Asta Cancellata', auction: descendantAuction}); 
-                break; 
+            switch (auctionType) {
+                case "english":
+                    const englishAuction = await EnglishAuction.findOne({ where: { id: auctionId } })
+                    englishAuction.destroy();
+                    res.send(200).json({ message: 'Asta Cancellata', auction: englishAuction });
+                    break;
 
-                case "silent": 
-                    const silentAuction = await SilentAuction.findOne({where: { id: auctionId }})
-                    silentAuction.destroy(); 
-                    res.send(200).json({message: 'Asta Cancellata', auction: silentAuction}); 
-                break;
+                case "descendant":
+                    const descendantAuction = await DescendingAuction.findOne({ where: { id: auctionId } })
+                    descendantAuction.destroy();
+                    res.send(200).json({ message: 'Asta Cancellata', auction: descendantAuction });
+                    break;
+
+                case "silent":
+                    const silentAuction = await SilentAuction.findOne({ where: { id: auctionId } })
+                    silentAuction.destroy();
+                    res.send(200).json({ message: 'Asta Cancellata', auction: silentAuction });
+                    break;
             }
-        } catch(error) {
+        } catch (error) {
             console.log("Errore nel cancellare l'asta", error);
-            next(new HttpError(`Errore nel cancellare l\'asta: ${error.message}`)); 
+            next(new HttpError(`Errore nel cancellare l\'asta: ${error.message}`));
         }
     }
 
     static async makeOffer(req, res, next) {
         try {
-            const { amount, auctionType } = req.body; 
-            const auctionId = req.params.id;  
+            const { amount, auctionType } = req.body;
+            const auctionId = req.params.id;
             const userId = req.user.id; // id dell'utente autenticato
 
             let auctionModel, offerModel;
-            
+
             // Seleziona il modello dell'asta e dell'offerta in base al tipo di asta
             switch (auctionType) {
                 case 'english':
@@ -237,7 +238,7 @@ class AuctionController {
 
             // Trova l'asta corretta
             const auction = await auctionModel.findByPk(auctionId);
-            
+
             if (!auction) {
                 return res.status(404).json({ message: 'Asta non trovata' });
             }
@@ -269,15 +270,15 @@ class AuctionController {
 
     static async acceptSilentOffer(req, res, next) {
         try {
-            const offerId = req.params.offerId; 
-            const auctionId = req.params.id; 
-            
+            const offerId = req.params.offerId;
+            const auctionId = req.params.id;
+
             // Trova l'asta
             const auction = await SilentAuction.findByPk(auctionId);
-            const offer = await SilentAuctionOffer.findByPk(offerId); 
+            const offer = await SilentAuctionOffer.findByPk(offerId);
 
             if (!auction || !offer) {
-                return res.status(404).json({ message: 'Asta o Offerta non trovata'});
+                return res.status(404).json({ message: 'Asta o Offerta non trovata' });
             }
 
             auction.buyerId = offer.userId;

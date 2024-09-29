@@ -1,124 +1,42 @@
-import UserModel from './User/User.js'; 
+import UserModel from './User/User.js';
 import AuctionCategoryModel from './AuctionCategory/AuctionCategory.js';
-import CategoryModel from './Category/Category.js'; 
-import { SilentAuctionModel, DescendingAuctionModel, EnglishAuctionModel } from './Auction/index.js'; 
-import { DescendingAuctionOfferModel, SilentAuctionOfferModel, EnglishAuctionOfferModel } from './AuctionOffer/index.js'; 
+import { SilentAuctionModel, DescendingAuctionModel, EnglishAuctionModel } from './Auction/index.js';
+import { DescendingAuctionOfferModel, SilentAuctionOfferModel, EnglishAuctionOfferModel } from './AuctionOffer/index.js';
 import connection from '../config/connection.js';
 
 
 // Definizione Modelli 
-const User = connection.define('User', UserModel, {updatedAt: false}); 
+const User = connection.define('User', UserModel, { updatedAt: false });
 
 
-const SilentAuction = connection.define('SilentAuction', SilentAuctionModel, {updatedAt: false}); 
-const EnglishAuction = connection.define('EnglishAuction', EnglishAuctionModel, {updatedAt: false}); 
-const DescendingAuction = connection.define('DescendingAuction', DescendingAuctionModel, {updatedAt: false}); 
+const SilentAuction = connection.define('SilentAuction', SilentAuctionModel, { updatedAt: false });
+const EnglishAuction = connection.define('EnglishAuction', EnglishAuctionModel, { updatedAt: false });
+const DescendingAuction = connection.define('DescendingAuction', DescendingAuctionModel, { updatedAt: false });
 
-const SilentAuctionOffer = connection.define('SilentAuctionOffer', SilentAuctionOfferModel, {updatedAt: false});  
-const EnglishAuctionOffer = connection.define('EnglishAuctionOffer', EnglishAuctionOfferModel, {updatedAt: false}); 
-const DescendingAuctionOffer = connection.define('DescendingAuctionOffer', DescendingAuctionOfferModel, {updatedAt: false}); 
+const SilentAuctionOffer = connection.define('SilentAuctionOffer', SilentAuctionOfferModel, { updatedAt: false });
+const EnglishAuctionOffer = connection.define('EnglishAuctionOffer', EnglishAuctionOfferModel, { updatedAt: false });
+const DescendingAuctionOffer = connection.define('DescendingAuctionOffer', DescendingAuctionOfferModel, { updatedAt: false });
 
-const Category = connection.define('Category', CategoryModel, {timestamps: false});
-const AuctionCategory = connection.define('AuctionCategory', AuctionCategoryModel, {timestamps: false}); 
+const Category = connection.define('Category', AuctionCategoryModel, { timestamps: false });
 
 // Definizione Associazioni 
-User.createdSilentAuctions = User.hasMany(SilentAuction, {foreignKey: {allowNull: false, name: 'sellerId'}, onDelete: 'CASCADE'});
-User.createdDescendingAuctions = User.hasMany(DescendingAuction, {foreignKey: {allowNull: false, name: 'sellerId'}, onDelete: 'CASCADE'}); 
-User.createdEnglishAuctions = User.hasMany(EnglishAuction, {foreignKey: {allowNull: false, name: 'sellerId'}, onDelete: 'CASCADE'}); 
+User.createdSilentAuctions = User.hasMany(SilentAuction, { foreignKey: { allowNull: false, name: 'sellerId' }, onDelete: 'CASCADE' });
+User.createdDescendingAuctions = User.hasMany(DescendingAuction, { foreignKey: { allowNull: false, name: 'sellerId' }, onDelete: 'CASCADE' });
+User.createdEnglishAuctions = User.hasMany(EnglishAuction, { foreignKey: { allowNull: false, name: 'sellerId' }, onDelete: 'CASCADE' });
 
 
-User.wonSilentAuctions = User.hasMany(SilentAuction, {foreignKey: {allowNull: true, name: 'buyerId'}, onDelete: 'CASCADE'}); 
-User.wonDecendingAuctions = User.hasMany(DescendingAuction, {foreignKey: {allowNull: true, name: 'buyerId'}, onDelete: 'CASCADE'}); 
-User.wonEnglishAuctions = User.hasMany(EnglishAuction, {foreignKey: {allowNull: true, name: 'buyerId'}, onDelete: 'CASCADE'}); 
+User.wonSilentAuctions = User.hasMany(SilentAuction, { foreignKey: { allowNull: true, name: 'buyerId' }, onDelete: 'CASCADE' });
+User.wonDecendingAuctions = User.hasMany(DescendingAuction, { foreignKey: { allowNull: true, name: 'buyerId' }, onDelete: 'CASCADE' });
+User.wonEnglishAuctions = User.hasMany(EnglishAuction, { foreignKey: { allowNull: true, name: 'buyerId' }, onDelete: 'CASCADE' });
 
 
-SilentAuction.offers = SilentAuction.hasMany(SilentAuctionOffer, {foreignKey: {allowNull: false, name: 'offerId'}, onDelete: 'CASCADE'})
-DescendingAuction.offers = DescendingAuction.hasMany(DescendingAuctionOffer, {foreignKey: {allowNull: false, name: 'offerId'}, onDelete: 'CASCADE'}); 
-EnglishAuction.offers = EnglishAuction.hasMany(EnglishAuctionOffer, {foreignKey: {allowNull: false}, onDelete: 'CASCADE'}); 
+SilentAuction.offers = SilentAuction.hasMany(SilentAuctionOffer, { foreignKey: { allowNull: false, name: 'offerId' }, onDelete: 'CASCADE' })
+DescendingAuction.offers = DescendingAuction.hasMany(DescendingAuctionOffer, { foreignKey: { allowNull: false, name: 'offerId' }, onDelete: 'CASCADE' });
+EnglishAuction.offers = EnglishAuction.hasMany(EnglishAuctionOffer, { foreignKey: { allowNull: false }, onDelete: 'CASCADE' });
 
-User.SilentOffers = User.hasMany(SilentAuctionOffer, {foreignKey: {allowNull: false, name: 'userId'}, onDelete: 'CASCADE'}); 
-User.DescendingOffers = User.hasMany(DescendingAuctionOffer, {foreignKey: {allowNull: false, name: 'userId'}, onDelete: 'CASCADE'}); 
-User.usersOffers = User.hasMany(EnglishAuctionOffer, {foreignKey: {allowNull: false, name: 'userId'}, onDelete: 'CASCADE'}); 
-
-
-// Associazioni Aste - Categorie con associazioni polimorfica
-// English Auction associazione polimorfica
-EnglishAuction.belongsToMany(Category, {
-  through: {
-    model: AuctionCategory,
-    unique: false,
-    scope: {
-      auctionType: 'English' // Associazione polimorfica basata sul tipo di asta
-    }
-  },
-  foreignKey: 'auctionId',
-  constraints: false
-});
-
-Category.belongsToMany(EnglishAuction, {
-  through: {
-    model: AuctionCategory,
-    unique: false,
-    scope: {
-      auctionType: 'English' // Filtra per tipo d'asta
-    }
-  },
-  foreignKey: 'categoryId',
-  constraints: false
-});
-
-  
-  // Reverse Auction associazione polimorfica
-  DescendingAuction.belongsToMany(Category, {
-    through: {
-      model: AuctionCategory,
-      unique: false,
-      scope: {
-        auctionType: 'Descendant' // Associazione basata sul tipo "Discendente"
-      }
-    },
-    foreignKey: 'auctionId',
-    constraints: false
-  });
-  
-  Category.belongsToMany(DescendingAuction, {
-    through: {
-      model: AuctionCategory,
-      unique: false,
-      scope: {
-        auctionType: 'Descendant'
-      }
-    },
-    foreignKey: 'categoryId',
-    constraints: false
-  });
-  
-  
-  // Silent Auction associazione polimorfica
-  SilentAuction.belongsToMany(Category, {
-    through: {
-      model: AuctionCategory,
-      unique: false,
-      scope: {
-        auctionType: 'Silent' // Associazione polimorfica basata sul tipo silenzioso
-      }
-    },
-    foreignKey: 'auctionId',
-    constraints: false
-  });
-  
-  Category.belongsToMany(SilentAuction, {
-    through: {
-      model: AuctionCategory,
-      unique: false,
-      scope: {
-        auctionType: 'Silent'
-      }
-    },
-    foreignKey: 'categoryId',
-    constraints: false
-  });
-  
+User.SilentOffers = User.hasMany(SilentAuctionOffer, { foreignKey: { allowNull: false, name: 'userId' }, onDelete: 'CASCADE' });
+User.DescendingOffers = User.hasMany(DescendingAuctionOffer, { foreignKey: { allowNull: false, name: 'userId' }, onDelete: 'CASCADE' });
+User.usersOffers = User.hasMany(EnglishAuctionOffer, { foreignKey: { allowNull: false, name: 'userId' }, onDelete: 'CASCADE' });
 
 // Definizione Triggers 
 
@@ -126,16 +44,16 @@ Category.belongsToMany(EnglishAuction, {
 DescendingAuction.beforeCreate(async (offer, options) => {
   const existingOffer = await DescendingAuction.findOne({
     where: {
-      auctionId: offer.auctionId 
+      auctionId: offer.auctionId
     }
   })
-  if(existingOffer) throw new Error("Qualcuno ha già presentato un'offerta, l'asta è conclusa."); 
+  if (existingOffer) throw new Error("Qualcuno ha già presentato un'offerta, l'asta è conclusa.");
 })
 
 // 2. Asta al ribasso , dopo che è stata presentata un'offerta questa viene automaticamente vinta 
 DescendingAuctionOffer.afterCreate(async (offer, options) => {
   await DescendingAuction.update(
-    { buyedId: offer.userId }, 
+    { buyedId: offer.userId },
     { where: { id: offer.auctionId } }
   )
 })
@@ -144,13 +62,13 @@ DescendingAuctionOffer.afterCreate(async (offer, options) => {
 EnglishAuctionOffer.beforeCreate(async (newOffer, options) => {
   const existingOffer = await EnglishAuctionOffer.findOne({
     where: {
-      auctionId: newOffer.auctionId, 
+      auctionId: newOffer.auctionId,
       userId: newOffer.userId
     }
   })
 
-  if(existingOffer) {
-    await existingOffer.update({ amount: newOffer.amount }); 
+  if (existingOffer) {
+    await existingOffer.update({ amount: newOffer.amount });
     throw new Error("Offerta aggiornata")
   }
 })
@@ -159,9 +77,9 @@ EnglishAuctionOffer.beforeCreate(async (newOffer, options) => {
 SilentAuctionOffer.beforeCreate(async (offer, options) => {
   const auction = await SilentAuction.findOne({
     where: { id: offer.auctionId }
-  }); 
+  });
 
-  if(auction.endDate && new Date() > auction.endDate) throw new Error("L'asta è scaduta, non puoi più presentare un'offerta") 
+  if (auction.endDate && new Date() > auction.endDate) throw new Error("L'asta è scaduta, non puoi più presentare un'offerta")
 })
 
 
@@ -174,41 +92,41 @@ EnglishAuctionOffer.beforeCreate(async (offer, options) => {
   const auction = await EnglishAuction.findOne({ where: { id: offer.auctionId } });
 
   if (!auction) {
-      throw new Error('Asta non trovata.');
+    throw new Error('Asta non trovata.');
   }
 
   // Verifica se l'asta è scaduta
   if (new Date() > auction.endDate) {
-      throw new Error('L\'asta è già scaduta. Non è possibile fare altre offerte.');
+    throw new Error('L\'asta è già scaduta. Non è possibile fare altre offerte.');
   }
 
   // Trova l'ultima offerta per questa asta
   const lastOffer = await EnglishAuctionOffer.findOne({
-      where: { auctionId: offer.auctionId },
-      order: [['createdAt', 'DESC']]
+    where: { auctionId: offer.auctionId },
+    order: [['createdAt', 'DESC']]
   });
 
   // Se l'utente è l'ultimo offerente, impedisci una nuova offerta e richiedi di attendere
   if (lastOffer && lastOffer.userId === offer.userId) {
-      throw new Error('Hai già fatto l\'ultima offerta. Attendi che qualcun altro faccia un\'offerta prima di presentare una nuova offerta.');
+    throw new Error('Hai già fatto l\'ultima offerta. Attendi che qualcun altro faccia un\'offerta prima di presentare una nuova offerta.');
   }
 
   // Trova l'offerta precedente dello stesso utente per questa asta
   const userPreviousOffer = await EnglishAuctionOffer.findOne({
-      where: {
-          auctionId: offer.auctionId,
-          userId: offer.userId
-      }
+    where: {
+      auctionId: offer.auctionId,
+      userId: offer.userId
+    }
   });
 
   if (userPreviousOffer) {
-      // Aggiorna l'offerta esistente con la nuova somma offerta
-      await userPreviousOffer.update({
-          amount: offer.amount
-      });
+    // Aggiorna l'offerta esistente con la nuova somma offerta
+    await userPreviousOffer.update({
+      amount: offer.amount
+    });
 
-      // Impedisce la creazione di una nuova offerta (l'aggiornamento è già avvenuto)
-      throw new Error('La tua offerta è stata aggiornata con successo.');
+    // Impedisce la creazione di una nuova offerta (l'aggiornamento è già avvenuto)
+    throw new Error('La tua offerta è stata aggiornata con successo.');
   }
 });
 
@@ -219,26 +137,26 @@ EnglishAuctionOffer.afterUpsert(async (result, options) => {
   const auction = await EnglishAuction.findOne({ where: { id: offer.auctionId } });
 
   if (auction) {
-      // Aggiorna il prezzo corrente dell'asta e resetta il timer
-      const newEndTime = new Date(new Date().getTime() + auction.bidDuration * 1000);
-      await auction.update({
-          currentPrice: offer.amount,
-          endDate: newEndTime
-      });
+    // Aggiorna il prezzo corrente dell'asta e resetta il timer
+    const newEndTime = new Date(new Date().getTime() + auction.bidDuration * 1000);
+    await auction.update({
+      currentPrice: offer.amount,
+      endDate: newEndTime
+    });
 
-      console.log(`Timer dell'asta (ID: ${auction.id}) resettato a ${newEndTime}`);
+    console.log(`Timer dell'asta (ID: ${auction.id}) resettato a ${newEndTime}`);
   }
 });
-  
 
-export { 
-    User, 
-    Category, 
-    AuctionCategory,  
-    SilentAuction, 
-    DescendingAuction, 
-    EnglishAuction,
-    SilentAuctionOffer, 
-    DescendingAuctionOffer, 
-    EnglishAuctionOffer,  
+
+export {
+  User,
+  Category,
+  AuctionCategory,
+  SilentAuction,
+  DescendingAuction,
+  EnglishAuction,
+  SilentAuctionOffer,
+  DescendingAuctionOffer,
+  EnglishAuctionOffer,
 }; 
