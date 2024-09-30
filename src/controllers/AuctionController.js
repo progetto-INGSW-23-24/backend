@@ -77,6 +77,10 @@ class AuctionController {
                 order: [['createdAt', 'DESC']]
             });
 
+            silentAuctions.rows.forEach(auction => { auction.dataValues.auction_type = 'silent'; });
+            englishAuctions.rows.forEach(auction => { auction.dataValues.auction_type = 'english'; });
+            descendingAuctions.rows.forEach(auction => { auction.dataValues.auction_type = 'descending'; });
+
             // Combinare le aste
             const allAuctions = [
                 ...silentAuctions.rows,
