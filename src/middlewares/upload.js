@@ -1,4 +1,4 @@
-import { S3 } from 'aws-sdk';
+import pkg from 'aws-sdk';
 import multer from 'multer';
 import multerS3 from 'multer-s3';
 import {
@@ -7,6 +7,8 @@ import {
     S3_AWS_REGION,
     S3_BUCKET_NAME,
 } from '../config/environment.js';
+
+const { S3 } = pkg;
 
 // Configura AWS S3
 const s3 = new S3({
