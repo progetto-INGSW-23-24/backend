@@ -1,4 +1,4 @@
-INSERT INTO public."Categories" (name) VALUES
+INSERT INTO public."AuctionCategories" (name) VALUES
     ('Arredamento'),
     ('Elettronica'),
     ('Abbigliamento'),
