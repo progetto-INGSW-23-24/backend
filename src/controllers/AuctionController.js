@@ -40,15 +40,15 @@ class AuctionController {
             const includeOffersAndUserCondition = {
                 silent: [
                     // { model: SilentAuctionOffer, as: 'offers' },
-                    { model: User, as: 'seller', attributes: ['id', 'name', 'email'] } // Include il creatore dell'asta
+                    { model: User, as: 'seller', attributes: ['id', 'firstName', 'lastName', 'email'] } // Include il creatore dell'asta
                 ],
                 english: [
                     // { model: EnglishAuctionOffer, as: 'offers' },
-                    { model: User, as: 'seller', attributes: ['id', 'name', 'email'] }
+                    { model: User, as: 'seller', attributes: ['id', 'firstName', 'lastName', 'email'] }
                 ],
                 descending: [
                     // { model: DescendingAuctionOffer, as: 'offers' },
-                    { model: User, as: 'seller', attributes: ['id', 'name', 'email'] }
+                    { model: User, as: 'seller', attributes: ['id', 'firstName', 'lastName', 'email'] }
                 ]
             };
 
@@ -58,7 +58,7 @@ class AuctionController {
                 limit,
                 offset,
                 include: [...includeCategoryCondition, ...includeOffersAndUserCondition.silent],
-                order: [['createdAt', 'DESC']]
+                order: [['createdAt', 'DESC']],
             });
 
             const englishAuctions = await EnglishAuction.findAndCountAll({

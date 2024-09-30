@@ -24,6 +24,7 @@
   "scripts": {
     "start": "nodemon ./src/server.js",
     "dbSetup": "node ./src/config/databaseSetup.js",
+    "dbSync": "node ./src/config/syncDatabase.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
