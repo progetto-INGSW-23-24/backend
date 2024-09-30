@@ -25,7 +25,7 @@ class UserController {
             // Risposta di successo
             return res.status(200).json({
                 message: "Profilo aggiornato con successo.",
-                new_image_path: req.imageLocation,
+                image_path: req.imageLocation,
             });
         } catch (error) {
             console.error("Errore nell'aggiornamento del profilo:", error);

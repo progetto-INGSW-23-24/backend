@@ -56,7 +56,7 @@ export const uploadProfilePicture = (req, res, next) => {
     s3.upload(
         {
             Bucket: S3_BUCKET_NAME,
-            Key: `profileImages/${Date.now()}-${req.file.originalname}`, // Nome univoco per il file
+            Key: `profileImages/${req.file.originalname}`, // Nome univoco per il file
             Body: req.file.buffer,
             ContentType: req.file.mimetype,
             ACL: "public-read",
