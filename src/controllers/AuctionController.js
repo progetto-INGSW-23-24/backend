@@ -1,4 +1,13 @@
-import { EnglishAuction, DescendingAuction, SilentAuction, SilentAuctionOffer, DescendingAuctionOffer, EnglishAuctionOffer, User, Category } from "../models/index.js";
+import {
+    EnglishAuction,
+    DescendingAuction,
+    SilentAuction,
+    SilentAuctionOffer,
+    DescendingAuctionOffer,
+    EnglishAuctionOffer,
+    User,
+    AuctionCategory,
+} from "../models/index.js";
 import HttpError from '../config/HttpError.js';
 
 class AuctionController {
@@ -19,7 +28,7 @@ class AuctionController {
 
             if (categoryIds && categoryIds.length > 0) {
                 includeCategoryCondition.push({
-                    model: Category,
+                    model: AuctionCategory,
                     where: {
                         id: { [Op.in]: categoryIds }
                     },
@@ -101,7 +110,7 @@ class AuctionController {
             const userId = req.params.userId;
             const auctions = await EnglishAuction.findAll({
                 where: { sellerId: userId },
-                include: [Category],
+                include: [AuctionCategory],
                 order: [['createdAt', 'DESC']]
             })
 

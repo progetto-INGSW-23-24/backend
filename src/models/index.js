@@ -17,7 +17,7 @@ const SilentAuctionOffer = connection.define('SilentAuctionOffer', SilentAuction
 const EnglishAuctionOffer = connection.define('EnglishAuctionOffer', EnglishAuctionOfferModel, { updatedAt: false });
 const DescendingAuctionOffer = connection.define('DescendingAuctionOffer', DescendingAuctionOfferModel, { updatedAt: false });
 
-const Category = connection.define('Category', AuctionCategoryModel, { timestamps: false });
+const AuctionCategory = connection.define('AuctionCategory', AuctionCategoryModel, { timestamps: false });
 
 // Definizione Associazioni 
 User.createdSilentAuctions = User.hasMany(SilentAuction, { foreignKey: { allowNull: false, name: 'sellerId' }, onDelete: 'CASCADE' });
@@ -41,8 +41,8 @@ User.usersOffers = User.hasMany(EnglishAuctionOffer, { foreignKey: { allowNull: 
 // Definizione Triggers 
 
 // 1. Asta al ribasso , Offerta permessa soltanto se non ci sono altre offerte 
-DescendingAuction.beforeCreate(async (offer, options) => {
-  const existingOffer = await DescendingAuction.findOne({
+DescendingAuctionOffer.beforeCreate(async (offer, options) => {
+  const existingOffer = await DescendingAuctionOffer.findOne({
     where: {
       auctionId: offer.auctionId
     }
@@ -151,8 +151,7 @@ EnglishAuctionOffer.afterUpsert(async (result, options) => {
 
 export {
   User,
-  Category,
-  AuctionCategoryModel,
+  AuctionCategory,
   SilentAuction,
   DescendingAuction,
   EnglishAuction,

@@ -1,11 +1,11 @@
 import HttpError from "../config/HttpError.js";
-import { Category } from "../models/index.js";
+import { AuctionCategory } from "../models/index.js";
 
 class CategoryController {
 
     static async getCategories(req, res, next) {
         try {
-            const categories = await Category.findAll();
+            const categories = await AuctionCategory.findAll();
 
             res.status(200).json(categories);
         } catch (error) {
