@@ -1,7 +1,7 @@
 import express from "express";
 import { AuctionController } from '../controllers/index.js';
 import cognitoAuth from '../middlewares/cognitoAuth.js';
-import { uploadAuctionImage } from "../middlewares/upload.js";
+import { upload, uploadAuctionImage } from "../middlewares/upload.js";
 
 const auctionRouter = express.Router();
 
@@ -17,14 +17,8 @@ auctionRouter.get('/:userId', cognitoAuth, AuctionController.getUserAuctions);
 auctionRouter.post(
     '',
     cognitoAuth,
-    (req, res, next) => {
-        uploadAuctionImage(req, res, function (err) {
-            if (err) return res.status(400).json({ error: err.message });
-
-            req.imageUrl = req.file.location; // Salva l'URL dell'immagine nel req
-            next();
-        })
-    },
+    upload.single("image"),
+    uploadAuctionImage,
     AuctionController.createAuction
 );
 

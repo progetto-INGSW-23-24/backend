@@ -1,6 +1,5 @@
-import S3 from 'aws-sdk/clients/s3.js';
+import AWS from 'aws-sdk';
 import multer from 'multer';
-import multerS3 from 'multer-s3';
 import {
     AWS_ACCESS_KEY_ID,
     AWS_SECRET_ACCESS_KEY,
@@ -10,7 +9,7 @@ import {
 
 
 // Configura AWS S3
-const s3 = new S3({
+const s3 = new AWS.S3({
     region: S3_AWS_REGION,
     credentials: {
         accessKeyId: AWS_ACCESS_KEY_ID,
@@ -18,37 +17,34 @@ const s3 = new S3({
     },
 });
 
-// Funzione per creare un middleware di upload personalizzato
-const createUploadMiddleware = (folderPath) => {
-    return multer({
-        storage: multerS3({
-            s3: s3,
-            bucket: S3_BUCKET_NAME,
-            acl: 'public-read',
-            key: function (req, file, cb) {
-                console.log("@#@#@#@#@#@#@# FILE FILTER 0");
-                // Definisci il nome del file su S3 con il percorso specificato
-                const fileName = `${folderPath}/${Date.now()}_${file.originalname}`;
-                cb(null, fileName);
-            }
-        }),
-        limits: { fileSize: 1024 * 1024 * 5 }, // Limite del file (es. 5MB)
-        fileFilter: (req, file, cb) => {
-            // Filtra i file accettati, ad esempio solo immagini
-            if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-                console.log("@#@#@#@#@#@#@# FILE FILTER 1");
-                
-                cb(null, true);
-            } else {
-                console.log("@#@#@#@#@#@#@# FILE FILTER 2");
-                cb(new Error('Invalid file type, only JPEG and PNG is allowed!'), false);
-            }
-        }
-    }).single('image'); // 'image' è il nome del campo nel form
-};
+export const upload = multer({ storage: multer.memoryStorage() });
+
 
 // Middleware per caricare su 'auctionsImages'
-export const uploadAuctionImage = createUploadMiddleware('auctionsImages');
+export const uploadAuctionImage = (req, res, next) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'Nessun file caricato' });
+    }
+
+    const params = {
+        Bucket: S3_BUCKET_NAME,
+        Key: `${folderPath}/${Date.now()}-${req.file.originalname}`, // Nome univoco per il file
+        Body: req.file.buffer,
+        ContentType: req.file.mimetype
+    };
+
+    s3.upload(params, (err, data) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Errore durante il caricamento dell'immagine" });
+        }
+
+        req.imageLocation = data.Location;
+        console.log(`@#@#@#@#@#@# IMAGE LOCATION: ${data.Location}`);
+
+        next();
+    });
+};
 
 // Middleware per caricare su 'profilePictures'
 export const uploadProfilePicture = createUploadMiddleware('profilePictures');

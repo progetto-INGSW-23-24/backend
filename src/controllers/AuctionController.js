@@ -129,7 +129,7 @@ class AuctionController {
 
             const userId = req.user.userId;
 
-            const imagePath = req.imageUrl;
+            const imagePath = req.imageLocation;
 
             switch (auctionType) {
                 case 'english':
