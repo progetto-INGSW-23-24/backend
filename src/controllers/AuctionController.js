@@ -19,15 +19,14 @@ class AuctionController {
             const limit = parseInt(req.query.limit) || 10; // Default: 10 elementi
             const page = parseInt(req.query.page) || 1; // Default: prima pagina
             const offset = (page - 1) * limit; // Calcola l'offset per la paginazione
-            console.log(`CATEGORIES: ${req.query.categories}`);
-            const categoryIds = req.query.categories ? req.query.categories.split(',').map(Number) : null;
-            
+            const categoryIds = req.query.categories ? req.query.categories.split(',').map((v) => Number(v)) : null;
+
 
             // Condizioni di ricerca (filtraggio per categoria opzionale)
             const whereCondition = {};
 
             if (categoryIds && categoryIds.length > 0) {
-                whereCondition.categories = { [Op.in]: categoryIds };
+                whereCondition.categories = { [Op.overlap]: categoryIds };
             }
 
             // Include le offerte e il venditore per ciascun tipo di asta
