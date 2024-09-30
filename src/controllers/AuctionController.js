@@ -24,17 +24,8 @@ class AuctionController {
             // Condizioni di ricerca (filtraggio per categoria opzionale)
             const whereCondition = {};
 
-            // Filtra per categorie se specificato
-            let includeCategoryCondition = [];
-
             if (categoryIds && categoryIds.length > 0) {
-                includeCategoryCondition.push({
-                    model: AuctionCategory,
-                    where: {
-                        id: { [Op.in]: categoryIds }
-                    },
-                    required: true // Fa sì che vengano ritornate solo le aste che appartengono a queste categorie
-                });
+                whereCondition.categories = { [Op.in]: categoryIds };
             }
 
             // Include le offerte e il venditore per ciascun tipo di asta
@@ -58,7 +49,7 @@ class AuctionController {
                 where: whereCondition,
                 limit,
                 offset,
-                include: [...includeCategoryCondition, ...includeOffersAndUserCondition.silent],
+                include: [...includeOffersAndUserCondition.silent],
                 order: [['createdAt', 'DESC']],
             });
 
@@ -66,7 +57,7 @@ class AuctionController {
                 where: whereCondition,
                 limit,
                 offset,
-                include: [...includeCategoryCondition, ...includeOffersAndUserCondition.english],
+                include: [...includeOffersAndUserCondition.english],
                 order: [['createdAt', 'DESC']]
             });
 
@@ -74,7 +65,7 @@ class AuctionController {
                 where: whereCondition,
                 limit,
                 offset,
-                include: [...includeCategoryCondition, ...includeOffersAndUserCondition.descending],
+                include: [...includeOffersAndUserCondition.descending],
                 order: [['createdAt', 'DESC']]
             });
 
