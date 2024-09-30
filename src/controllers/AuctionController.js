@@ -40,15 +40,15 @@ class AuctionController {
             const includeOffersAndUserCondition = {
                 silent: [
                     { model: SilentAuctionOffer },
-                    { model: User, attributes: ['id', 'firstName', 'lastName', 'email'] } // Include il creatore dell'asta
+                    { model: User, as: 'seller' },
                 ],
                 english: [
                     { model: EnglishAuctionOffer },
-                    { model: User, attributes: ['id', 'firstName', 'lastName', 'email'] }
+                    { model: User, as: 'seller' },
                 ],
                 descending: [
                     { model: DescendingAuctionOffer },
-                    { model: User, attributes: ['id', 'firstName', 'lastName', 'email'] }
+                    { model: User, as: 'seller' },
                 ]
             };
 
