@@ -29,6 +29,10 @@ class AuctionController {
                 whereCondition.categories = { [Op.overlap]: categoryIds };
             }
 
+            if (req.query.searchDescription) {
+                whereCondition.description = { [Op.iLike]: `%${req.query.searchDescription}%` }
+            }
+
             // Include le offerte e il venditore per ciascun tipo di asta
             const includeOffersAndUserCondition = {
                 silent: [
