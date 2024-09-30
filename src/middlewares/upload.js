@@ -28,7 +28,7 @@ export const uploadAuctionImage = (req, res, next) => {
 
     const params = {
         Bucket: S3_BUCKET_NAME,
-        Key: `${folderPath}/${Date.now()}-${req.file.originalname}`, // Nome univoco per il file
+        Key: `auctionImages/${Date.now()}-${req.file.originalname}`, // Nome univoco per il file
         Body: req.file.buffer,
         ContentType: req.file.mimetype
     };
@@ -47,4 +47,27 @@ export const uploadAuctionImage = (req, res, next) => {
 };
 
 // Middleware per caricare su 'profilePictures'
-export const uploadProfilePicture = createUploadMiddleware('profilePictures');
+export const uploadProfilePicture = (req, res, next) => {
+    if (!req.file) {
+        return res.status(400).json({ message: 'Nessun file caricato' });
+    }
+
+    const params = {
+        Bucket: S3_BUCKET_NAME,
+        Key: `profileImages/${Date.now()}-${req.file.originalname}`, // Nome univoco per il file
+        Body: req.file.buffer,
+        ContentType: req.file.mimetype
+    };
+
+    s3.upload(params, (err, data) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).json({ message: "Errore durante il caricamento dell'immagine" });
+        }
+
+        req.imageLocation = data.Location;
+        console.log(`@#@#@#@#@#@# IMAGE LOCATION: ${data.Location}`);
+
+        next();
+    });
+};
