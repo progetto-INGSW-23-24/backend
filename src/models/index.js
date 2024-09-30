@@ -42,11 +42,21 @@ EnglishAuction.belongsTo(User, { foreignKey: { name: 'buyerId', allowNull: false
 
 SilentAuction.offers = SilentAuction.hasMany(SilentAuctionOffer, { foreignKey: { allowNull: false, name: 'offerId' }, onDelete: 'CASCADE' })
 DescendingAuction.offers = DescendingAuction.hasMany(DescendingAuctionOffer, { foreignKey: { allowNull: false, name: 'offerId' }, onDelete: 'CASCADE' });
-EnglishAuction.offers = EnglishAuction.hasMany(EnglishAuctionOffer, { foreignKey: { allowNull: false }, onDelete: 'CASCADE' });
+EnglishAuction.offers = EnglishAuction.hasMany(EnglishAuctionOffer, { foreignKey: { allowNull: false, name: 'offerId' }, onDelete: 'CASCADE' });
+
+SilentAuctionOffer.belongsTo(SilentAuction, { foreignKey: { name: 'offerId', allowNull: false } });
+DescendingAuctionOffer.belongsTo(DescendingAuction, { foreignKey: { name: 'offerId', allowNull: false } });
+EnglishAuctionOffer.belongsTo(EnglishAuction, { foreignKey: { name: 'offerId', allowNull: false } });
+
+
 
 User.SilentOffers = User.hasMany(SilentAuctionOffer, { foreignKey: { allowNull: false, name: 'userId' }, onDelete: 'CASCADE' });
 User.DescendingOffers = User.hasMany(DescendingAuctionOffer, { foreignKey: { allowNull: false, name: 'userId' }, onDelete: 'CASCADE' });
 User.usersOffers = User.hasMany(EnglishAuctionOffer, { foreignKey: { allowNull: false, name: 'userId' }, onDelete: 'CASCADE' });
+
+SilentAuctionOffer.belongsTo(User, { foreignKey: { name: 'userId', allowNull: false } });
+DescendingAuctionOffer.belongsTo(User, { foreignKey: { name: 'userId', allowNull: false } });
+EnglishAuctionOffer.belongsTo(User, { foreignKey: { name: 'userId', allowNull: false } });
 
 // Definizione Triggers 
 
