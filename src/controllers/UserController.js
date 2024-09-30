@@ -20,11 +20,12 @@ class UserController {
 
 
             // Aggiorna solo i campi presenti nel body della richiesta
-           await User.update(updateData, { where: { id: userId }, fields: Object.keys(updateData) });
+            await User.update(updateData, { where: { id: userId }, fields: Object.keys(updateData) });
 
             // Risposta di successo
             return res.status(200).json({
                 message: "Profilo aggiornato con successo.",
+                new_image_path: req.imageLocation,
             });
         } catch (error) {
             console.error("Errore nell'aggiornamento del profilo:", error);
