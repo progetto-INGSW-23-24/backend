@@ -9,6 +9,7 @@ import {
     AuctionCategory,
 } from "../models/index.js";
 import HttpError from '../config/HttpError.js';
+import { Op } from "sequelize";
 
 class AuctionController {
 
