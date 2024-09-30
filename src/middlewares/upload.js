@@ -1,4 +1,4 @@
-import pkg from 'aws-sdk';
+import S3 from 'aws-sdk/clients/s3.js';
 import multer from 'multer';
 import multerS3 from 'multer-s3';
 import {
@@ -8,13 +8,14 @@ import {
     S3_BUCKET_NAME,
 } from '../config/environment.js';
 
-const { S3 } = pkg;
 
 // Configura AWS S3
 const s3 = new S3({
-    accessKeyId: AWS_ACCESS_KEY_ID,
-    secretAccessKey: AWS_SECRET_ACCESS_KEY,
-    region: S3_AWS_REGION
+    region: S3_AWS_REGION,
+    credentials: {
+        accessKeyId: AWS_ACCESS_KEY_ID,
+        secretAccessKey: AWS_SECRET_ACCESS_KEY,
+    },
 });
 
 // Funzione per creare un middleware di upload personalizzato
@@ -25,6 +26,7 @@ const createUploadMiddleware = (folderPath) => {
             bucket: S3_BUCKET_NAME,
             acl: 'public-read',
             key: function (req, file, cb) {
+                console.log("@#@#@#@#@#@#@# FILE FILTER 0");
                 // Definisci il nome del file su S3 con il percorso specificato
                 const fileName = `${folderPath}/${Date.now()}_${file.originalname}`;
                 cb(null, fileName);
@@ -34,8 +36,11 @@ const createUploadMiddleware = (folderPath) => {
         fileFilter: (req, file, cb) => {
             // Filtra i file accettati, ad esempio solo immagini
             if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+                console.log("@#@#@#@#@#@#@# FILE FILTER 1");
+                
                 cb(null, true);
             } else {
+                console.log("@#@#@#@#@#@#@# FILE FILTER 2");
                 cb(new Error('Invalid file type, only JPEG and PNG is allowed!'), false);
             }
         }
