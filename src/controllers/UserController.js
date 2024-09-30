@@ -13,7 +13,7 @@ class UserController {
                 lastName: req.body.lastName,
                 bio: req.body.bio,
                 webSiteLink: req.body.webSiteLink,
-                profileImagePath: req.body.profileImagePath,
+                profileImagePath: req.imageLocation,
                 fcm: req.body.fcm,
                 socialLink: req.body.socialLink
             };

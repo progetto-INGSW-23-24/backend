@@ -50,7 +50,7 @@ export const uploadAuctionImage = (req, res, next) => {
 // Middleware per caricare su 'profilePictures'
 export const uploadProfilePicture = (req, res, next) => {
     if (!req.file) {
-        return res.status(400).json({ message: 'Nessun file caricato' });
+       next();
     }
 
     s3.upload(
