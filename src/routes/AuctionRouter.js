@@ -23,14 +23,14 @@ auctionRouter.post(
 );
 
 // eliminazione di un'asta
-auctionRouter.delete(':id', cognitoAuth, AuctionController.deleteAuction);
+auctionRouter.delete('/:id', cognitoAuth, AuctionController.deleteAuction);
 
 /* ---------------------------------------------- */
 
 // fare un'offerta 
-auctionRouter.post(':id/offers', cognitoAuth, AuctionController.makeOffer);
+auctionRouter.post('/:id/offers', cognitoAuth, AuctionController.makeOffer);
 
 // accetta un offerta 
-auctionRouter.patch(':id/offers/:offerId', cognitoAuth, AuctionController.acceptSilentOffer);
+auctionRouter.patch('/:id/offers/:offerId', cognitoAuth, AuctionController.acceptSilentOffer);
 
 export default auctionRouter; 
