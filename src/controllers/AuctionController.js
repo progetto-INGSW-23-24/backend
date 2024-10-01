@@ -120,23 +120,6 @@ class AuctionController {
         }
     }
 
-
-    static async getUserAuctions(req, res, next) {
-        try {
-            const userId = req.params.userId;
-            const auctions = await EnglishAuction.findAll({
-                where: { sellerId: userId },
-                include: [AuctionCategory],
-                order: [['createdAt', 'DESC']]
-            })
-
-            res.status(200).json({ auctions });
-        } catch (error) {
-            console.log(`Errore nel recupero delle aste dell'utente:, ${error.message}`);
-            next(new HttpError(`Errore durante il recupero delle aste: ${error.message}`, 500));
-        }
-    }
-
     static async createAuction(req, res, next) {
         try {
             const {

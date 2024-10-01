@@ -10,9 +10,6 @@ const auctionRouter = express.Router();
 // ottenere le auctions dal db, vedere bene per quali parametri filtrare
 auctionRouter.get('', cognitoAuth, AuctionController.getAuctions);
 
-// ottenere aste di un utente in particolare
-auctionRouter.get('/:userId', cognitoAuth, AuctionController.getUserAuctions);
-
 // caricamento nuova asta 
 auctionRouter.post(
     '',
