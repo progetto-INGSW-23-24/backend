@@ -31,7 +31,7 @@ auctionRouter.post('/:id/offers', cognitoAuth, AuctionController.makeOffer);
 auctionRouter.patch('/:id/offers/:offerId', cognitoAuth, AuctionController.acceptSilentOffer);
 
 
-auctionRouter.get('/created', AuctionController.getCreatedAuctions);
-auctionRouter.get('/purchased', AuctionController.getPurchasedAuctions);
+auctionRouter.get('/created', cognitoAuth, AuctionController.getCreatedAuctions);
+auctionRouter.get('/purchased', cognitoAuth, AuctionController.getPurchasedAuctions);
 
 export default auctionRouter; 
