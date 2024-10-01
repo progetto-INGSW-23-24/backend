@@ -324,18 +324,21 @@ class AuctionController {
                 order: [['createdAt', 'DESC']],
             });
 
-            silentAuctions.forEach((auction) => {
+            for (const auction of silentAuctions) {
                 auction.dataValues.is_expired = isSilentAuctionExpired(auction);
                 auction.dataValues.auction_type = 'silent';
-            });
-            englishAuctions.forEach(async (auction) => {
+            }
+
+            for (const auction of englishAuctions) {
                 auction.dataValues.is_expired = await isEnglishAuctionExpired(auction);
                 auction.dataValues.auction_type = 'english';
-            });
-            descendingAuctions.forEach((auction) => {
+            }
+
+            for (const auction of descendingAuctions) {
                 auction.dataValues.is_expired = isDescendingAuctionExpired(auction);
                 auction.dataValues.auction_type = 'descending';
-            });
+            }
+
 
 
             const allAuctions = [...silentAuctions, ...descendingAuctions, ...englishAuctions];
