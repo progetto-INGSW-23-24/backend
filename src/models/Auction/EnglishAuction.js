@@ -1,4 +1,5 @@
 import { DataTypes } from "sequelize";
+import { EnglishAuctionOffer } from "../index.js";
 
 const EnglishAuctionModel = {
     id: {
@@ -33,6 +34,24 @@ const EnglishAuctionModel = {
         allowNull: false,
         defaultValue: [],
     },
+}
+
+export async function isEnglishAuctionExpired(auction) {
+    const now = new Date();
+    const lastOffer = await EnglishAuctionOffer.findOne({
+        where: { auctionId: auction.id },
+        order: [['createdAt', 'DESC']]
+    });
+
+    if (!lastOffer) {
+        // Se non ci sono offerte, l'asta è considerata scaduta
+        return true;
+    }
+
+    const lastOfferTime = new Date(lastOffer.createdAt);
+    lastOfferTime.setMinutes(lastOfferTime.getMinutes() + auction.timer);
+
+    return now > lastOfferTime;
 }
 
 export default EnglishAuctionModel; 

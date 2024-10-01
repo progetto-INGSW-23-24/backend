@@ -26,4 +26,9 @@ const SilentAuctionModel = {
     },
 }
 
+export function isSilentAuctionExpired(auction) {
+    const now = new Date();
+    return auction.expirationDateTime < now;
+}
+
 export default SilentAuctionModel; 

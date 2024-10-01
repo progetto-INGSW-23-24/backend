@@ -3,6 +3,9 @@ import AuctionCategoryModel from './AuctionCategory/AuctionCategory.js';
 import { SilentAuctionModel, DescendingAuctionModel, EnglishAuctionModel } from './Auction/index.js';
 import { DescendingAuctionOfferModel, SilentAuctionOfferModel, EnglishAuctionOfferModel } from './AuctionOffer/index.js';
 import connection from '../config/connection.js';
+import { isDescendingAuctionExpired } from './Auction/DescendantAuction.js';
+import { isSilentAuctionExpired } from './Auction/SilentAuction.js';
+import { isEnglishAuctionExpired } from './Auction/EnglishAuction.js';
 
 
 // Definizione Modelli 
@@ -60,46 +63,29 @@ EnglishAuctionOffer.belongsTo(User, { foreignKey: { name: 'userId', allowNull: f
 
 // Definizione Triggers 
 
-// 1. Asta al ribasso , Offerta permessa soltanto se non ci sono altre offerte 
+// Asta al ribasso , Offerta permessa soltanto se non ci sono altre offerte 
 DescendingAuctionOffer.beforeCreate(async (offer, options) => {
-  const existingOffer = await DescendingAuctionOffer.findOne({
-    where: {
-      auctionId: offer.auctionId
-    }
-  })
-  if (existingOffer) throw new Error("Qualcuno ha già presentato un'offerta, l'asta è conclusa.");
+  const descendingAuction = await DescendingAuction.findOne({ where: { id: offer.auctionId } })
+  const auctionAlreadyPurchased = descendingAuction.buyerId !== null;
+  const isOfferExpired = isDescendingAuctionExpired(descendingAuction);
+  if (auctionAlreadyPurchased) throw new Error("Qualcuno ha già presentato un'offerta, l'asta è conclusa.");
+  if (isOfferExpired) throw new Error("L'asta è conclusa.");
 })
 
-// 2. Asta al ribasso , dopo che è stata presentata un'offerta questa viene automaticamente vinta 
+// Asta al ribasso , dopo che è stata presentata un'offerta questa viene automaticamente vinta 
 DescendingAuctionOffer.afterCreate(async (offer, options) => {
   await DescendingAuction.update(
-    { buyedId: offer.userId },
+    { buyerId: offer.userId },
     { where: { id: offer.auctionId } }
   )
 })
 
-// 3. Asta all'inglese , se un'utente ha già creato un offerta viene aggiornata, altrimenti viene creata
-EnglishAuctionOffer.beforeCreate(async (newOffer, options) => {
-  const existingOffer = await EnglishAuctionOffer.findOne({
-    where: {
-      auctionId: newOffer.auctionId,
-      userId: newOffer.userId
-    }
-  })
-
-  if (existingOffer) {
-    await existingOffer.update({ amount: newOffer.amount });
-    throw new Error("Offerta aggiornata")
-  }
-})
-
-// 4. Asta silenziosa , Offerte non permesse dopo la scadenza 
+// Asta silenziosa , Offerte non permesse dopo la scadenza 
 SilentAuctionOffer.beforeCreate(async (offer, options) => {
-  const auction = await SilentAuction.findOne({
-    where: { id: offer.auctionId }
-  });
+  const auction = await SilentAuction.findOne({ where: { id: offer.auctionId } });
+  const isAuctionExpired = isSilentAuctionExpired(auction);
 
-  if (auction.endDate && new Date() > auction.endDate) throw new Error("L'asta è scaduta, non puoi più presentare un'offerta")
+  if (isAuctionExpired) throw new Error("L'asta è scaduta, non puoi più presentare un'offerta")
 })
 
 
@@ -116,7 +102,7 @@ EnglishAuctionOffer.beforeCreate(async (offer, options) => {
   }
 
   // Verifica se l'asta è scaduta
-  if (new Date() > auction.endDate) {
+  if (await isEnglishAuctionExpired(auction)) {
     throw new Error('L\'asta è già scaduta. Non è possibile fare altre offerte.');
   }
 
@@ -141,33 +127,11 @@ EnglishAuctionOffer.beforeCreate(async (offer, options) => {
 
   if (userPreviousOffer) {
     // Aggiorna l'offerta esistente con la nuova somma offerta
-    await userPreviousOffer.update({
-      amount: offer.amount
-    });
+    await userPreviousOffer.update({ amount: offer.amount });
 
-    // Impedisce la creazione di una nuova offerta (l'aggiornamento è già avvenuto)
-    throw new Error('La tua offerta è stata aggiornata con successo.');
+    return false; // Restituisci false per interrompere il flusso di creazione
   }
 });
-
-// aggiornamento timer dopo la creazione o l'aggiornamento del timer 
-EnglishAuctionOffer.afterUpsert(async (result, options) => {
-  const offer = result[0];  // Ottieni l'offerta dopo l'upsert
-
-  const auction = await EnglishAuction.findOne({ where: { id: offer.auctionId } });
-
-  if (auction) {
-    // Aggiorna il prezzo corrente dell'asta e resetta il timer
-    const newEndTime = new Date(new Date().getTime() + auction.bidDuration * 1000);
-    await auction.update({
-      currentPrice: offer.amount,
-      endDate: newEndTime
-    });
-
-    console.log(`Timer dell'asta (ID: ${auction.id}) resettato a ${newEndTime}`);
-  }
-});
-
 
 export {
   User,

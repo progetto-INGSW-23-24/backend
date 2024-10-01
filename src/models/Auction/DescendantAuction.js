@@ -39,4 +39,32 @@ const DescendingAuctionModel = {
     },
 }
 
+export function isDescendingAuctionExpired(auction) {
+    const {
+        createdAt,       // Data di inizio dell'asta
+        startingPrice,   // Prezzo iniziale
+        minimumPrice,    // Prezzo minimo
+        decreaseAmount,  // Ribasso per intervallo
+        decreaseTime     // Tempo tra i ribassi in minuti
+    } = auction;
+
+    const now = new Date();
+    const auctionStartTime = new Date(createdAt);
+
+    // Tempo trascorso dall'inizio dell'asta in millisecondi
+    const timeElapsed = now - auctionStartTime;
+
+    // Converti decreaseTime da minuti a secondi
+    const decreaseTimeInSeconds = decreaseTime * 60;
+
+    // Numero di ribassi già avvenuti
+    const decreasesOccurred = Math.floor(timeElapsed / 1000 / decreaseTimeInSeconds);
+
+    // Prezzo corrente calcolato
+    let currentPrice = startingPrice - (decreasesOccurred * decreaseAmount);
+
+    // Verifica se l'asta è scaduta (prezzo ha raggiunto il minimo)
+    return currentPrice <= minimumPrice;
+}
+
 export default DescendingAuctionModel; 

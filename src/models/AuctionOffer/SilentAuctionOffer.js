@@ -1,4 +1,4 @@
-import { DataTypes } from "sequelize"; 
+import { DataTypes } from "sequelize";
 
 
 const SilentAuctionOfferModel = {
@@ -6,6 +6,6 @@ const SilentAuctionOfferModel = {
         type: DataTypes.DOUBLE,
         allowNull: false
     }
-} 
+}
 
 export default SilentAuctionOfferModel; 
