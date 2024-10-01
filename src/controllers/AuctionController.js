@@ -355,12 +355,10 @@ class AuctionController {
                 auction.dataValues.auction_type = 'descending';
             }
 
-
-
             const allAuctions = [...silentAuctions, ...descendingAuctions, ...englishAuctions];
             allAuctions.sort((a, b) => b.createdAt - a.createdAt); // Ordina tutte le aste per data di creazione
 
-            res.status(200).json(allAuctions);
+            res.status(200).json({ auctions: allAuctions });
         } catch (error) {
             console.error('Errore nel recupero delle aste:', error);
             next(new HttpError(`Errore nel recupero delle aste: ${error.message}`, 500));
@@ -422,7 +420,7 @@ class AuctionController {
             const allAuctions = [...silentAuctions, ...descendingAuctions, ...englishAuctions];
             allAuctions.sort((a, b) => b.createdAt - a.createdAt); // Ordina tutte le aste per data di creazione
 
-            res.status(200).json({auctions: allAuctions});
+            res.status(200).json({ auctions: allAuctions });
         } catch (error) {
             console.error('Errore nel recupero delle aste:', error);
             next(new HttpError(`Errore nel recupero delle aste: ${error.message}`, 500));
