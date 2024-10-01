@@ -33,7 +33,7 @@ app.use('/category', categoryRouter);
 app.use(errorHandler);
 
 app.get('/', (req, res) => {
-    res.send("Dieti Deals Backend");
+    res.status("Dieti Deals Backend");
 })
 
 

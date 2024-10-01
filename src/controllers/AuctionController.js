@@ -195,19 +195,19 @@ class AuctionController {
                 case "english":
                     const englishAuction = await EnglishAuction.findOne({ where: { id: auctionId } })
                     englishAuction.destroy();
-                    res.send(200).json({ message: 'Asta Cancellata', auction: englishAuction });
+                    res.status(200).json({ message: 'Asta Cancellata', auction: englishAuction });
                     break;
 
                 case "descendant":
                     const descendantAuction = await DescendingAuction.findOne({ where: { id: auctionId } })
                     descendantAuction.destroy();
-                    res.send(200).json({ message: 'Asta Cancellata', auction: descendantAuction });
+                    res.status(200).json({ message: 'Asta Cancellata', auction: descendantAuction });
                     break;
 
                 case "silent":
                     const silentAuction = await SilentAuction.findOne({ where: { id: auctionId } })
                     silentAuction.destroy();
-                    res.send(200).json({ message: 'Asta Cancellata', auction: silentAuction });
+                    res.status(200).json({ message: 'Asta Cancellata', auction: silentAuction });
                     break;
             }
         } catch (error) {
@@ -360,7 +360,7 @@ class AuctionController {
             const allAuctions = [...silentAuctions, ...descendingAuctions, ...englishAuctions];
             allAuctions.sort((a, b) => b.createdAt - a.createdAt); // Ordina tutte le aste per data di creazione
 
-            res.send(200).json(allAuctions);
+            res.status(200).json(allAuctions);
         } catch (error) {
             console.error('Errore nel recupero delle aste:', error);
             next(new HttpError(`Errore nel recupero delle aste: ${error.message}`, 500));
@@ -422,7 +422,7 @@ class AuctionController {
             const allAuctions = [...silentAuctions, ...descendingAuctions, ...englishAuctions];
             allAuctions.sort((a, b) => b.createdAt - a.createdAt); // Ordina tutte le aste per data di creazione
 
-            res.send(200).json(allAuctions);
+            res.status(200).json(allAuctions);
         } catch (error) {
             console.error('Errore nel recupero delle aste:', error);
             next(new HttpError(`Errore nel recupero delle aste: ${error.message}`, 500));
