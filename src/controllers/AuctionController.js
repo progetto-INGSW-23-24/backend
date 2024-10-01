@@ -235,7 +235,7 @@ class AuctionController {
         try {
             const { amount, auctionType } = req.body;
             const auctionId = req.params.id;
-            const userId = req.user.id; // id dell'utente autenticato
+            const userId = req.user.userId; // id dell'utente autenticato
 
             let auctionModel, offerModel;
 
