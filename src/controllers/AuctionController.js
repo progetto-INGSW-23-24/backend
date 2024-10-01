@@ -36,15 +36,27 @@ class AuctionController {
             // Include le offerte e il venditore per ciascun tipo di asta
             const includeOffersAndUserCondition = {
                 silent: [
-                    { model: SilentAuctionOffer },
+                    {
+                        model: SilentAuctionOffer,
+                        order: [['createdAt', 'DESC']],
+                        limit: 1,
+                    },
                     { model: User, as: 'seller' },
                 ],
                 english: [
-                    { model: EnglishAuctionOffer },
+                    {
+                        model: EnglishAuctionOffer,
+                        order: [['createdAt', 'DESC']],
+                        limit: 1,
+                    },
                     { model: User, as: 'seller' },
                 ],
                 descending: [
-                    { model: DescendingAuctionOffer },
+                    {
+                        model: DescendingAuctionOffer,
+                        order: [['createdAt', 'DESC']],
+                        limit: 1,
+                    },
                     { model: User, as: 'seller' },
                 ]
             };
