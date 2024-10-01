@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 
 
 const DescendingAuctionOfferModel = {
-    price: {
+    amount: {
         type: DataTypes.DOUBLE,
         allowNull: false
     }

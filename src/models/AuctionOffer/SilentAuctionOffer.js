@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 
 
 const SilentAuctionOfferModel = {
-    price: {
+    amount: {
         type: DataTypes.DOUBLE,
         allowNull: false
     }
