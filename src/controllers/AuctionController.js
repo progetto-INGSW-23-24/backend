@@ -42,6 +42,7 @@ class AuctionController {
                         model: SilentAuctionOffer,
                         order: [['createdAt', 'DESC']],
                         limit: 1,
+                        as: 'offer',
                     },
                     { model: User, as: 'seller' },
                 ],
@@ -50,6 +51,7 @@ class AuctionController {
                         model: EnglishAuctionOffer,
                         order: [['createdAt', 'DESC']],
                         limit: 1,
+                        as: 'offer',
                     },
                     { model: User, as: 'seller' },
                 ],
@@ -58,6 +60,7 @@ class AuctionController {
                         model: DescendingAuctionOffer,
                         order: [['createdAt', 'DESC']],
                         limit: 1,
+                        as: 'offer',
                     },
                     { model: User, as: 'seller' },
                 ]
