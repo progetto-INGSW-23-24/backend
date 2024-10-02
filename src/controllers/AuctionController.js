@@ -26,7 +26,7 @@ class AuctionController {
 
             // Condizioni di ricerca (filtraggio per categoria opzionale)
             const whereCondition = {
-                id: { [Op.ne]: req.user.userId } // non seleziona le proprie aste
+                sellerId: { [Op.ne]: req.user.userId } // non seleziona le proprie aste
             };
 
             if (categoryIds && categoryIds.length > 0) {
