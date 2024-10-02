@@ -396,6 +396,24 @@ class AuctionController {
             })
 
             const englishAuctions = await EnglishAuction.findAll({
+                attributes: {
+                    include: [
+                        [
+                            literal(`
+                                COALESCE(
+                                    (
+                                        SELECT ea2."createdAt"
+                                        FROM public."EnglishAuctionOffers" as ea2
+                                        WHERE ea2."auctionId" = "EnglishAuction"."id"
+                                        ORDER BY ea2."createdAt" DESC
+                                        LIMIT 1
+                                    ), "EnglishAuction"."createdAt"
+                                ) + ("EnglishAuction"."timer" * INTERVAL '1 minute') < CURRENT_TIMESTAMP
+                            `),
+                            'is_expired'
+                        ]
+                    ]
+                },
                 include: [
                     {
                         model: EnglishAuctionOffer,
