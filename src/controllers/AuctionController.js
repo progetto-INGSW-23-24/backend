@@ -430,7 +430,6 @@ class AuctionController {
                 auction.dataValues.auction_type = 'silent';
             });
             englishAuctions.forEach(async (auction) => {
-                auction.dataValues.is_expired = await isEnglishAuctionExpired(auction);
                 auction.dataValues.auction_type = 'english';
             });
             descendingAuctions.forEach((auction) => {
