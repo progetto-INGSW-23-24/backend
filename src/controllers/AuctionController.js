@@ -25,7 +25,9 @@ class AuctionController {
 
 
             // Condizioni di ricerca (filtraggio per categoria opzionale)
-            const whereCondition = {};
+            const whereCondition = {
+                id: { [Op.ne]: req.user.userId } // non seleziona le proprie aste
+            };
 
             if (categoryIds && categoryIds.length > 0) {
                 whereCondition.categories = { [Op.overlap]: categoryIds };
@@ -34,6 +36,7 @@ class AuctionController {
             if (req.query.searchDescription) {
                 whereCondition.description = { [Op.iLike]: `%${req.query.searchDescription}%` }
             }
+
 
             // Include le offerte e il venditore per ciascun tipo di asta
             const includeOffersAndUserCondition = {

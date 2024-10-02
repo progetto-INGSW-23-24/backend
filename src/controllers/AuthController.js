@@ -93,7 +93,6 @@ class AuthController {
 
     static async signup(req, res, next) {
         const { email, password, given_name, family_name } = req.body;
-        console.log(email, password, given_name, family_name);
 
         // Controlla che tutti i campi richiesti siano presenti
         if (!email || !password || !given_name || !family_name) {
