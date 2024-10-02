@@ -375,7 +375,8 @@ class AuctionController {
                     {
                         model: SilentAuctionOffer,
                         where: { userId: userId }, // Filtra le offerte per userId specifico
-                        required: true // Assicura che solo le SilentAuction con offerte dell'utente siano restituite
+                        required: true, // Assicura che solo le SilentAuction con offerte dell'utente siano restituite
+                        as: 'offer',
                     }
                 ],
                 order: [['createdAt', 'DESC']],
@@ -387,7 +388,8 @@ class AuctionController {
                     {
                         model: DescendingAuctionOffer,
                         where: { userId: userId }, // Filtra le offerte per userId specifico
-                        required: true // Assicura che solo le SilentAuction con offerte dell'utente siano restituite
+                        required: true, // Assicura che solo le SilentAuction con offerte dell'utente siano restituite
+                        as: 'offer',
                     }
                 ],
                 order: [['createdAt', 'DESC']],
@@ -398,7 +400,8 @@ class AuctionController {
                     {
                         model: EnglishAuctionOffer,
                         where: { userId: userId }, // Filtra le offerte per userId specifico
-                        required: true // Assicura che solo le SilentAuction con offerte dell'utente siano restituite
+                        required: true, // Assicura che solo le SilentAuction con offerte dell'utente siano restituite
+                        as: 'offer',
                     }
                 ],
                 order: [['createdAt', 'DESC']],
