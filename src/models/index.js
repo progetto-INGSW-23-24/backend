@@ -43,9 +43,9 @@ EnglishAuction.belongsTo(User, { foreignKey: { name: 'buyerId', allowNull: false
 
 
 
-SilentAuction.hasMany(SilentAuctionOffer, { foreignKey: { allowNull: false, name: 'auctionId' }, onDelete: 'CASCADE' })
-DescendingAuction.hasMany(DescendingAuctionOffer, { foreignKey: { allowNull: false, name: 'auctionId' }, onDelete: 'CASCADE' });
-EnglishAuction.hasMany(EnglishAuctionOffer, { foreignKey: { allowNull: false, name: 'auctionId' }, onDelete: 'CASCADE' });
+SilentAuction.hasMany(SilentAuctionOffer, { foreignKey: { allowNull: false, name: 'auctionId' }, as: 'offer', onDelete: 'CASCADE' })
+DescendingAuction.hasMany(DescendingAuctionOffer, { foreignKey: { allowNull: false, name: 'auctionId' }, as: 'offer', onDelete: 'CASCADE' });
+EnglishAuction.hasMany(EnglishAuctionOffer, { foreignKey: { allowNull: false, name: 'auctionId' }, as: 'offer', onDelete: 'CASCADE' });
 
 SilentAuctionOffer.belongsTo(SilentAuction, { foreignKey: { name: 'auctionId', allowNull: false } });
 DescendingAuctionOffer.belongsTo(DescendingAuction, { foreignKey: { name: 'auctionId', allowNull: false } });
